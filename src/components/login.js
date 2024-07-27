@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Image from "next/image";
 import { usePrivy } from "@privy-io/react-auth";
 
 export default function Login() {

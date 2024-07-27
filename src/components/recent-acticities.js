@@ -6,15 +6,14 @@ import Loader from "./loader";
 import { Input } from "./ui/input";
 import { debounce } from "@/utils/debounce";
 import { DataType } from "./data-type";
+import Image from "next/image";
 
-export const RecentActivities = () => {
+export const RecentActivities = ({ w0 }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [active, setActive] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const userAddress = "0xc6377415Ee98A7b71161Ee963603eE52fF7750FC";
-
   const debouncedFetchData = useCallback(
     debounce(async () => {
       setLoading(true);
@@ -23,25 +22,37 @@ export const RecentActivities = () => {
       try {
         const q = query(
           collection(db, "transactions"),
-          where("address", "==", userAddress)
+          where("address", "==", w0.address)
         );
         const querySnapshot = await getDocs(q);
         const fetchedData = querySnapshot.docs.map((doc) => doc.data());
 
+        // Flatten and sort data client-side
+        const allTransactions = fetchedData.flatMap((doc) => doc.transactions);
+
         // Filter transactions based on the type and search query
-        const filteredData = fetchedData.flatMap((doc) =>
-          doc.transactions.filter((tx) => {
-            const matchesType = active === "all" || tx.type === active;
-            const matchesSearchQuery =
-              tx.activity.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              tx.addresses.toLowerCase().includes(searchQuery.toLowerCase());
+        const filteredData = allTransactions.filter((tx) => {
+          const matchesType = active === "all" || tx.type === active;
+          const matchesSearchQuery =
+            tx.activity.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            tx.addresses.toLowerCase().includes(searchQuery.toLowerCase());
 
-            return matchesType && matchesSearchQuery;
-          })
-        );
+          return matchesType && matchesSearchQuery;
+        });
 
-        setData(filteredData);
+        // Function to parse date strings into Date objects
+        const parseDate = (dateString) => new Date(dateString);
+
+        // Sort transactions by the `date` field in descending order
+        const sortedData = filteredData.sort((a, b) => {
+          const aDate = parseDate(a.date);
+          const bDate = parseDate(b.date);
+          return bDate - aDate; // Descending order
+        });
+
+        setData(sortedData);
       } catch (e) {
+        console.error(e); // Log error for debugging
         setError("Error fetching document: " + e.message);
       } finally {
         setLoading(false);
@@ -53,7 +64,7 @@ export const RecentActivities = () => {
   // Fetch data initially and on changes to active or searchQuery
   useEffect(() => {
     debouncedFetchData();
-  }, [active, searchQuery, debouncedFetchData]);
+  }, [active, searchQuery, debouncedFetchData, w0]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -81,9 +92,14 @@ export const RecentActivities = () => {
           {error}
         </p>
       ) : data.length === 0 ? (
-        <p className="w-full flex items-center justify-center h-[40vh]">
-          No data
-        </p>
+        <div className="w-full flex flex-col gap-6 items-center justify-center min-h-[40vh] pb-40 pt-20">
+          <div className="flex flex-col items-center justify-center p-6 bg-white drop-shadow-sm rounded-lg">
+            <Image src="/not-found.svg" width={200} height={200} />
+            <p className="text-xl font-semibold text-black max-w-sm text-center">
+              No data found! Try sending some tokens
+            </p>
+          </div>
+        </div>
       ) : (
         <DataTable
           data={data}

@@ -1,16 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import {
-  CaretSortIcon,
-  ChevronDownIcon,
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons";
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -20,7 +12,6 @@ import {
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -39,11 +30,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataType } from "./main-page";
 import Image from "next/image";
 import { truncateAddress } from "@/utils/truncateAddress";
 import { CopyIcon } from "lucide-react";
 import { toast } from "sonner";
+import { truncateMessage } from "@/utils/truncateMessage";
 
 export const columns = [
   //   {
@@ -108,10 +99,7 @@ export const columns = [
             }
             `}
           >
-            <p className={`w-[6rem] text-center }`}>
-              {row.getValue("status")}
-              {console.log(row.getValue("status"))}
-            </p>
+            <p className={`w-[6rem] text-center }`}>{row.getValue("status")}</p>
           </div>
         </div>
       </div>
@@ -123,17 +111,17 @@ export const columns = [
     cell: ({ row }) => {
       return (
         <div className="font-medium capitalize text-[#71737F]">
-          {row.getValue("activity")}
+          {truncateMessage(row.getValue("activity"))}
         </div>
       );
     },
   },
   {
-    accessorKey: "addresses",
+    accessorKey: "receiverAddress",
     header: () => "Addresses",
     cell: ({ row }) => (
       <div className="lowercase flex items-center gap-2">
-        <p>{truncateAddress(row.getValue("addresses"), 4, 4)}</p>
+        <p>{truncateAddress(row.getValue("receiverAddress"), 4, 4)}</p>
         <div
           className="w-6"
           onClick={() => {
@@ -188,7 +176,7 @@ export const columns = [
   },
 ];
 
-export function DataTable({ data, setData, active, setActive }) {
+export function DataTable({ data }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
