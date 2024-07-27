@@ -43,6 +43,7 @@ import { DataType } from "./main-page";
 import Image from "next/image";
 import { truncateAddress } from "@/utils/truncateAddress";
 import { CopyIcon } from "lucide-react";
+import { toast } from "sonner";
 
 export const columns = [
   //   {
@@ -138,8 +139,10 @@ export const columns = [
           onClick={() => {
             try {
               navigator.clipboard.writeText(`${row.getValue("addresses")}`);
+              toast.success("Copied to clipboard");
             } catch (error) {
               console.log(error);
+              toast.error("Error copying to clipboard");
             }
           }}
         >
@@ -212,22 +215,7 @@ export function DataTable({ data, setData, active, setActive }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-end w-full py-4">
-        {/* <DataType
-          active={active}
-          setActive={setActive}
-          data={data}
-          setData={setData}
-        /> */}
-        {/* <Input
-          placeholder="Search..."
-          value={table.getColumn("addresses")?.getFilterValue() ?? ""}
-          onChange={(event) =>
-            table.getColumn("addresses")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        /> */}
-      </div>
+      <div className="py-4"></div>
       <div className="rounded-md border">
         <Table>
           <TableHeader className="bg-[#ECEFF3]">
@@ -248,7 +236,7 @@ export function DataTable({ data, setData, active, setActive }) {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className="bg-white">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
