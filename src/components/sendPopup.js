@@ -44,7 +44,7 @@ export function SendButton({ w0 }) {
           <AlertDialogTitle>Send Tokens</AlertDialogTitle>
           <AlertDialogDescription>
             This action is irreversible. Proceeding will permanently transfer
-            your ERC20 tokens from your account to the specified recipient's
+            your ERC20 tokens from your account to the specified recipient&apos;s
             account.
           </AlertDialogDescription>
         </AlertDialogHeader>
