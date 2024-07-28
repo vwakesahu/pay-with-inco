@@ -65,7 +65,7 @@ export default function Login() {
           target="_blank"
           className="group flex items-center text-primary font-semibold gap-[0.5ch] underline-offset-4 hover:underline"
         >
-          Inco Networks.
+          Inco Network.
         </Link>
       </footer>
     </div>
