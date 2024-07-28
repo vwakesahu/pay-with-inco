@@ -1,5 +1,6 @@
 "use client";
 import Loader from "@/components/loader";
+import Login from "@/components/login";
 import OwnerPage from "@/components/owner";
 import { usePrivy } from "@privy-io/react-auth";
 import React from "react";
