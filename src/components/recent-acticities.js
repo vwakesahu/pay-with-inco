@@ -9,7 +9,6 @@ import { DataType } from "./data-type";
 import Image from "next/image";
 
 export const RecentActivities = ({ w0, data, setData }) => {
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [active, setActive] = useState("all");
@@ -74,7 +73,7 @@ export const RecentActivities = ({ w0, data, setData }) => {
     <div className="my-12 px-8">
       <p className="text-4xl font-semibold mb-12">Recent Activities</p>
       <div className="flex items-center justify-between w-full mb-4">
-        <DataType active={active} setActive={setActive} />
+        <DataType active={active} setActive={setActive} data={data} />
         <Input
           placeholder="Search..."
           className="max-w-sm"

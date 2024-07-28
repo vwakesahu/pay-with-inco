@@ -1,6 +1,33 @@
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
-export const DataType = ({ active, setActive }) => {
+export const DataType = ({ active, setActive, data }) => {
+  const [counts, setCounts] = useState({
+    received: 0,
+    sent: 0,
+    all: data.length,
+  });
+  useEffect(() => {
+    setCounts(countTransactions(data));
+  }, [data]);
+
+  const countTransactions = (data) => {
+    const counts = {
+      received: 0,
+      sent: 0,
+      all: data.length,
+    };
+    data.forEach((transaction) => {
+      if (transaction.type === "received") {
+        counts.received++;
+      } else if (transaction.type === "sent") {
+        counts.sent++;
+      }
+    });
+
+    return counts;
+  };
+
   return (
     <div className="flex gap-4">
       <div className="flex items-center gap-4 ">
@@ -20,7 +47,7 @@ export const DataType = ({ active, setActive }) => {
           }`}
           onClick={() => setActive("all")}
         >
-          All 20
+          All {counts.all !== 0 && counts.all}
         </div>
         <div
           className={`p-1 px-2.5 rounded-lg ${
@@ -30,7 +57,7 @@ export const DataType = ({ active, setActive }) => {
           }`}
           onClick={() => setActive("received")}
         >
-          Received 35
+          Received {counts.received !== 0 && counts.received}
         </div>
         <div
           className={`p-1 px-2.5 rounded-lg ${
@@ -40,7 +67,7 @@ export const DataType = ({ active, setActive }) => {
           }`}
           onClick={() => setActive("sent")}
         >
-          Sent 15
+          Sent {counts.sent !== 0 && counts.sent}
         </div>
       </div>
     </div>
