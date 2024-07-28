@@ -73,13 +73,13 @@ export const columns = [
       </div>
     ),
   },
-  {
-    accessorKey: "value", //needs to be changed
-    header: () => "Value",
-    cell: ({ row }) => {
-      return <div className="font-medium">{row.getValue("value")}</div>;
-    },
-  },
+  // {
+  //   accessorKey: "value", //needs to be changed
+  //   header: () => "Value",
+  //   cell: ({ row }) => {
+  //     return <div className="font-medium">{row.getValue("value")}</div>;
+  //   },
+  // },
   {
     accessorKey: "status",
     header: "Status",
@@ -126,7 +126,9 @@ export const columns = [
           className="w-6"
           onClick={() => {
             try {
-              navigator.clipboard.writeText(`${row.getValue("receiverAddress")}`);
+              navigator.clipboard.writeText(
+                `${row.getValue("receiverAddress")}`
+              );
               toast.success("Copied to clipboard");
             } catch (error) {
               console.log(error);
@@ -142,38 +144,83 @@ export const columns = [
   {
     accessorKey: "date",
     header: () => "Date",
-    cell: ({ row }) => <div>{row.getValue("date")}</div>,
-  },
-
-  {
-    id: "actions",
-    enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const isoTimestamp = row.getValue("date");
+      const date = new Date(isoTimestamp);
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        timeZoneName: "short",
+      };
+
+      const formattedDate = date.toLocaleDateString("en-US", options);
+
+      return <div>{formattedDate}</div>;
     },
   },
+  {
+    accessorKey: "transactionHash",
+    header: () => "Block Explorer",
+    cell: ({ row }) => {
+      const transactionHash = row.getValue("transactionHash");
+      if (!transactionHash) {
+        return <div>Not available</div>;
+      } else {
+        return (
+          <a
+            href={`https://explorer.testnet.inco.org/tx/${transactionHash}`}
+            target="_blank"
+            className="text-primary"
+          >
+            {truncateAddress(transactionHash, 4, 4)}
+          </a>
+        );
+      }
+    },
+  },
+
+  // {
+  //   id: "actions",
+  //   enableHiding: false,
+  //   cell: ({ row }) => {
+  //     const payment = row.original;
+  //     console.log(row.original);
+
+  //     return (
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="ghost" className="h-8 w-8 p-0">
+  //             <span className="sr-only">Open menu</span>
+  //             <DotsHorizontalIcon className="h-4 w-4" />
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+  //           <DropdownMenuItem
+  //             onClick={() => {
+  //               try {
+  //                 navigator.clipboard.writeText(row.original.transactionHash);
+  //                 toast.success("Copied to clipboard");
+  //               } catch (error) {
+  //                 console.log(error);
+  //               }
+  //             }}
+  //           >
+  //             Copy Transaction Hash
+  //           </DropdownMenuItem>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuItem>View customer</DropdownMenuItem>
+  //           <DropdownMenuItem>View payment details</DropdownMenuItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //     );
+  //   },
+  // },
 ];
 
 export function DataTable({ data }) {

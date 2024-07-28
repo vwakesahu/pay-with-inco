@@ -3,8 +3,9 @@ import { SendButton } from "./sendPopup";
 import { ERC20ABI, erc20ContractAddress } from "@/contract";
 import { getInstance, getSignature } from "@/utils/fhEVM";
 import { CoinsIcon, PiggyBankIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loader from "./loader";
+import { RequestButton } from "./requestPopup";
 
 const { default: Image } = require("next/image");
 const { Button } = require("./ui/button");
@@ -46,6 +47,10 @@ export const Overview = ({ w0, data, setData }) => {
       console.log(error);
     }
   };
+  useEffect(() => {
+    balanceOfEncryptedErc20();
+  }, [w0]);
+
   return (
     <div className="mt-8 px-8">
       <p className="text-4xl font-semibold">Overview</p>
@@ -75,7 +80,12 @@ export const Overview = ({ w0, data, setData }) => {
                   </div>
                 )}
 
-                <SendButton w0={w0} data={data} setData={setData} />
+                <SendButton
+                  w0={w0}
+                  data={data}
+                  setData={setData}
+                  balanceOfEncryptedErc20={balanceOfEncryptedErc20}
+                />
               </div>
             </div>
           </div>
@@ -87,9 +97,10 @@ export const Overview = ({ w0, data, setData }) => {
                   lorem isumlorem isumlorem isumlorem isum
                 </p>
 
-                <Button variant="outline" className="mt-2 py-8 px-16">
-                  Request
-                </Button>
+                <RequestButton
+                  w0={w0}
+                  balanceOfEncryptedErc20={balanceOfEncryptedErc20}
+                />
               </div>
             </div>
           </div>
