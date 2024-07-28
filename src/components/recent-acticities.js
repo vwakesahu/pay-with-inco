@@ -8,8 +8,8 @@ import { debounce } from "@/utils/debounce";
 import { DataType } from "./data-type";
 import Image from "next/image";
 
-export const RecentActivities = ({ w0 }) => {
-  const [data, setData] = useState([]);
+export const RecentActivities = ({ w0, data, setData }) => {
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [active, setActive] = useState("all");
@@ -58,10 +58,10 @@ export const RecentActivities = ({ w0 }) => {
         setLoading(false);
       }
     }, 300),
-    [active, searchQuery]
+    [active, searchQuery, w0]
   );
 
-  // Fetch data initially and on changes to active or searchQuery
+  // Fetch data initially and on changes to active, searchQuery, or w0
   useEffect(() => {
     debouncedFetchData();
   }, [active, searchQuery, debouncedFetchData, w0]);

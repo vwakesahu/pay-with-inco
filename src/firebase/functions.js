@@ -13,10 +13,6 @@ const addTransaction = async (transaction) => {
   const senderAddress = transaction.addresses; // Sender's address
   const receiverAddress = transaction.receiverAddress; // Receiver's address
 
-  // Add the current date to the transaction
-  const currentDate = new Date().toISOString();
-  transaction.date = currentDate;
-
   // Helper function to add transaction to an address
   const addTransactionToAddress = async (address, transaction, type) => {
     const docRef = doc(db, "transactions", address);

@@ -126,7 +126,7 @@ export const columns = [
           className="w-6"
           onClick={() => {
             try {
-              navigator.clipboard.writeText(`${row.getValue("addresses")}`);
+              navigator.clipboard.writeText(`${row.getValue("receiverAddress")}`);
               toast.success("Copied to clipboard");
             } catch (error) {
               console.log(error);

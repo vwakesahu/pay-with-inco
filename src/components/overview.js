@@ -3,7 +3,7 @@ import { SendButton } from "./sendPopup";
 const { default: Image } = require("next/image");
 const { Button } = require("./ui/button");
 
-export const Overview = ({ w0 }) => {
+export const Overview = ({ w0, data, setData }) => {
   return (
     <div className="mt-8 px-8">
       <p className="text-4xl font-semibold">Overview</p>
@@ -21,7 +21,7 @@ export const Overview = ({ w0 }) => {
                   <div className="text-8xl font-semibold text-primary">$</div>
                 </div>
 
-                <SendButton w0={w0} />
+                <SendButton w0={w0} data={data} setData={setData} />
               </div>
             </div>
           </div>

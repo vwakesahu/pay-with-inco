@@ -13,23 +13,39 @@ import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { addTransaction } from "@/firebase/functions";
 import { useState } from "react";
+import Loader from "./loader";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
-export function SendButton({ w0 }) {
+export function SendButton({ w0, data, setData }) {
   const [open, setOpen] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState("");
   const [value, setValue] = useState(0);
+  console.log(data);
+  const [loading, setLoading] = useState(false);
   const handleAddTransaction = async (e) => {
-    e.preventDefault();
-    const transaction = {
-      type: "sent",
-      value: value,
-      status: "success",
-      activity: `sending money to ${receiverAddress}`,
-      addresses: w0.address,
-      receiverAddress: receiverAddress,
-    };
-
-    await addTransaction(transaction);
+    try {
+      e.preventDefault();
+      const transaction = {
+        type: "sent",
+        value: value,
+        status: "success",
+        activity: `sending money to ${receiverAddress}`,
+        addresses: w0.address,
+        receiverAddress: receiverAddress,
+        date: new Date().toISOString(),
+      };
+      setLoading(true);
+      await addTransaction(transaction);
+      setData((prevData) => [transaction, ...prevData]);
+      setLoading(false);
+      setOpen(false);
+      toast.success("Transaction added successfully");
+    } catch (error) {
+      console.error("Error adding transaction", error);
+      setLoading(false);
+      toast.error("Error adding transaction");
+    }
   };
 
   return (
@@ -44,8 +60,8 @@ export function SendButton({ w0 }) {
           <AlertDialogTitle>Send Tokens</AlertDialogTitle>
           <AlertDialogDescription>
             This action is irreversible. Proceeding will permanently transfer
-            your ERC20 tokens from your account to the specified recipient&apos;s
-            account.
+            your ERC20 tokens from your account to the specified
+            recipient&apos;s account.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Input
@@ -60,8 +76,17 @@ export function SendButton({ w0 }) {
         />
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={(e) => handleAddTransaction(e)}>
-            Continue
+          <AlertDialogAction
+            disabled={loading}
+            onClick={(e) => handleAddTransaction(e)}
+          >
+            {loading ? (
+              <div className="w-12 grid items-center justify-center">
+                <Loader2 className="animate-spin" />
+              </div>
+            ) : (
+              "Continue"
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
