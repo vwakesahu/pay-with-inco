@@ -1,9 +1,30 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePrivy } from "@privy-io/react-auth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Login() {
   const { login } = usePrivy();
+  const [selectedUser, setSelectedUser] = useState("beneficiary");
+  const router = useRouter();
+
+  const handleLogin = () => {
+    if (selectedUser === "admin") {
+      login();
+      router.push("/owner");
+    } else {
+      login();
+      router.push("/");
+    }
+  };
+
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center p-3.5">
       <main className="flex flex-col items-center gap-y-9">
@@ -17,7 +38,23 @@ export default function Login() {
           </p>
         </div>
         <div className="flex items-center gap-3.5">
-          <Button onClick={login}>Connect Wallet</Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="bg-white px-3 py-2 rounded-lg border capitalize">
+              {selectedUser || "Select User"}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              value={selectedUser}
+              onValueChange={setSelectedUser}
+            >
+              <DropdownMenuItem onSelect={() => setSelectedUser("admin")}>
+                Admin
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setSelectedUser("beneficiary")}>
+                Beneficiary
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button onClick={handleLogin}>Connect Wallet</Button>
         </div>
       </main>
 

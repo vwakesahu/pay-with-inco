@@ -6,6 +6,7 @@ import { CoinsIcon, PiggyBankIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import Loader from "./loader";
 import { RequestButton } from "./requestPopup";
+import BurnToken from "./burnPopup";
 
 const { default: Image } = require("next/image");
 const { Button } = require("./ui/button");
@@ -56,7 +57,7 @@ export const Overview = ({ w0, data, setData }) => {
       <p className="text-4xl font-semibold">Overview</p>
       <div className="mt-8 p-4 py-6 bg-white rounded-lg flex drop-shadow-sm">
         <Image src={"/icons/hero.svg"} width={305} height={247} />
-        <div className="w-full grid grid-cols-2">
+        <div className="w-full grid grid-cols-3">
           <div className="border-r w-full flex  items-center justify-center">
             <div>
               <div className="flex items-center gap-3">
@@ -89,15 +90,34 @@ export const Overview = ({ w0, data, setData }) => {
               </div>
             </div>
           </div>
-          <div className="w-full flex  items-center justify-center">
+          <div className="border-r w-full flex  items-center justify-center">
             <div>
               <p className="text-xl font-medium">Request</p>
               <div>
-                <p className="max-w-72 font-medium text-[#71737F]">
+                {/* <p className="max-w-72 font-medium text-[#71737F]">
                   lorem isumlorem isumlorem isumlorem isum
-                </p>
+                </p> */}
+                <div className="h-20"></div>
 
                 <RequestButton
+                  w0={w0}
+                  balanceOfEncryptedErc20={balanceOfEncryptedErc20}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full flex  items-center justify-center">
+            <div>
+              <p className="text-xl font-medium">Burn</p>
+              <div>
+                {/* <p className="max-w-72 font-medium text-[#71737F]">
+                  lorem isumlorem isumlorem isumlorem isum
+                </p> */}
+                <div className="h-20"></div>
+
+                <BurnToken
+                  balance={balance}
                   w0={w0}
                   balanceOfEncryptedErc20={balanceOfEncryptedErc20}
                 />
