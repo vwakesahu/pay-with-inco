@@ -57,7 +57,28 @@ const addTransaction = async (transaction) => {
     console.error("Error adding transaction: ", e);
   }
 };
-export { addTransaction };
+
+const burnToken = async (address, transaction) => {
+  const addTransactionToAddress = async (address, transaction, type) => {
+    const docRef = doc(db, "transactions", address);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      // If the document exists, update the transactions array
+      await updateDoc(docRef, {
+        transactions: arrayUnion({ ...transaction, type }),
+      });
+    } else {
+      // If the document does not exist, create it
+      await setDoc(docRef, {
+        address,
+        transactions: [{ ...transaction, type }],
+      });
+    }
+  };
+  addTransactionToAddress(address, transaction, "burned");
+};
+export { addTransaction, burnToken };
 
 export const uploadData = async (sampleData) => {
   try {

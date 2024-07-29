@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "./ui/input";
+import { burnToken } from "@/firebase/functions";
 
 const BurnToken = ({ w0, balanceOfEncryptedErc20, balance }) => {
   const [open, setOpen] = useState(false);
@@ -45,6 +46,17 @@ const BurnToken = ({ w0, balanceOfEncryptedErc20, balance }) => {
         fhevmInstance.encrypt32(Number(value))
       );
       await txn.wait(1);
+      const transaction = {
+        type: "burned",
+        value: 0,
+        status: "success",
+        transactionHash: txn.hash,
+        activity: `Burned tokens`,
+        addresses: w0.address,
+        receiverAddress: "",
+        date: new Date().toISOString(),
+      };
+      await burnToken(w0.address, transaction);
 
       console.log("Burned");
       toast.success("Burned successful");

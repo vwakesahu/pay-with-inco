@@ -120,25 +120,31 @@ export const columns = [
     accessorKey: "receiverAddress",
     header: () => "Addresses",
     cell: ({ row }) => (
-      <div className="lowercase flex items-center gap-2">
-        <p>{truncateAddress(row.getValue("receiverAddress"), 4, 4)}</p>
-        <div
-          className="w-6"
-          onClick={() => {
-            try {
-              navigator.clipboard.writeText(
-                `${row.getValue("receiverAddress")}`
-              );
-              toast.success("Copied to clipboard");
-            } catch (error) {
-              console.log(error);
-              toast.error("Error copying to clipboard");
-            }
-          }}
-        >
-          <CopyIcon className="w-3 hover:w-4 cursor-pointer transition-all duration-300 ease-in-out" />
-        </div>
-      </div>
+      <>
+        {row.getValue("receiverAddress") ? (
+          <div className="lowercase flex items-center gap-2">
+            <p>{truncateAddress(row.getValue("receiverAddress"), 4, 4)}</p>
+            <div
+              className="w-6"
+              onClick={() => {
+                try {
+                  navigator.clipboard.writeText(
+                    `${row.getValue("receiverAddress")}`
+                  );
+                  toast.success("Copied to clipboard");
+                } catch (error) {
+                  console.log(error);
+                  toast.error("Error copying to clipboard");
+                }
+              }}
+            >
+              <CopyIcon className="w-3 hover:w-4 cursor-pointer transition-all duration-300 ease-in-out" />
+            </div>
+          </div>
+        ) : (
+          "null"
+        )}
+      </>
     ),
   },
   {
