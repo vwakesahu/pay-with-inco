@@ -75,7 +75,7 @@ const BurnToken = ({ w0, balanceOfEncryptedErc20, balance }) => {
           </AlertDialogHeader>
           <div>
             <Input
-              placeholder="Tokens to be sent"
+              placeholder="Tokens to be burned"
               value={value}
               onChange={(e) => setValue(e.target.value)}
             />
