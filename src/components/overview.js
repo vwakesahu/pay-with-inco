@@ -1,17 +1,21 @@
 import { Contract } from "ethers";
 import { SendButton } from "./sendPopup";
-import { ERC20ABI, erc20ContractAddress } from "@/contract";
+import { ERC20ABI } from "@/contract";
 import { getInstance, getSignature } from "@/utils/fhEVM";
 import { CoinsIcon, PiggyBankIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import Loader from "./loader";
 import { RequestButton } from "./requestPopup";
 import BurnToken from "./burnPopup";
+import { useSelector } from "react-redux";
 
 const { default: Image } = require("next/image");
 const { Button } = require("./ui/button");
 
 export const Overview = ({ w0, data, setData }) => {
+  const {
+    erc20ContractAddress: { erc20ContractAddress },
+  } = useSelector((state) => state);
   const [balanceLoading, setBalanceLoading] = useState(false);
   const [balance, setBalance] = useState("0");
   const balanceOfEncryptedErc20 = async () => {

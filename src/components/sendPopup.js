@@ -17,10 +17,14 @@ import Loader from "./loader";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Contract } from "ethers";
-import { ERC20ABI, erc20ContractAddress } from "@/contract";
+import { ERC20ABI } from "@/contract";
 import { getInstance } from "@/utils/fhEVM";
+import { useSelector } from "react-redux";
 
 export function SendButton({ w0, data, setData, balanceOfEncryptedErc20 }) {
+  const {
+    erc20ContractAddress: { erc20ContractAddress },
+  } = useSelector((state) => state);
   const [open, setOpen] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState("");
   const [value, setValue] = useState("");

@@ -17,10 +17,14 @@ import Loader from "./loader";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Contract } from "ethers";
-import { ERC20ABI, erc20ContractAddress } from "@/contract";
+import { ERC20ABI } from "@/contract";
 import { getInstance } from "@/utils/fhEVM";
+import { useSelector } from "react-redux";
 
 export function RequestButton({ w0, balanceOfEncryptedErc20 }) {
+  const {
+    erc20ContractAddress: { erc20ContractAddress },
+  } = useSelector((state) => state);
   const [open, setOpen] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState("");
   const [value, setValue] = useState();
@@ -45,12 +49,12 @@ export function RequestButton({ w0, balanceOfEncryptedErc20 }) {
       );
       await txn.wait(1);
 
-      console.log("Minting 1e5 usdc to bob successful!");
-      toast.success("Minting successful");
+      // console.log("Minting 1e5 usdc to bob successful!");
+      // toast.success("Minting successful");
       await balanceOfEncryptedErc20();
       setLoading(false);
       setOpen(false);
-      toast.success("Transaction added successfully");
+      toast.success("Balance added successfully");
     } catch (error) {
       console.error("Error adding transaction", error);
       setLoading(false);
