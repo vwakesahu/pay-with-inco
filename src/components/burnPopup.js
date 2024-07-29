@@ -20,7 +20,7 @@ import {
 import { Input } from "./ui/input";
 import { burnToken } from "@/firebase/functions";
 
-const BurnToken = ({ w0, balanceOfEncryptedErc20, balance }) => {
+const BurnToken = ({ w0, balanceOfEncryptedErc20, balance, setData }) => {
   const [open, setOpen] = useState(false);
   const {
     erc20ContractAddress: { erc20ContractAddress },
@@ -57,6 +57,7 @@ const BurnToken = ({ w0, balanceOfEncryptedErc20, balance }) => {
         date: new Date().toISOString(),
       };
       await burnToken(w0.address, transaction);
+      setData((prevData) => [transaction, ...prevData]);
 
       console.log("Burned");
       toast.success("Burned successful");

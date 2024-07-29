@@ -121,6 +121,8 @@ export const Overview = ({ w0, data, setData }) => {
                 <div className="h-20"></div>
 
                 <BurnToken
+                  data={data}
+                  setData={setData}
                   balance={balance}
                   w0={w0}
                   balanceOfEncryptedErc20={balanceOfEncryptedErc20}
