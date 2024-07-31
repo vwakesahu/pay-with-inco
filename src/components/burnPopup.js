@@ -92,7 +92,7 @@ const BurnToken = ({
               <AlertDialogHeader>
                 <AlertDialogTitle>Unwrap</AlertDialogTitle>
                 <AlertDialogDescription className="w-80">
-                  Converted cUSDC.
+                  Convert cUSDC to USDC.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="mt-6">
