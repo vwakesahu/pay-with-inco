@@ -33,7 +33,7 @@ export default function Login() {
             Pay with Inco
           </h1>
           <p className="md:text-balance text-muted-foreground md:text-xl">
-            Prototype to Demonstrate Confidential ERC20 Transfers Using Inco
+            Prototype to demonstrate confidential ERC20 transfers using Inco
             Network. Connect your wallet to get started.
           </p>
         </div>

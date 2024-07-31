@@ -77,7 +77,7 @@ export function AdminDataTable({ data, decryptBalance }) {
     },
     {
       accessorKey: "decryptedBalance",
-      header: () => "Decrypt Balace",
+      header: () => "Decrypt Balance",
       cell: ({ row }) => {
         return (
           <>
