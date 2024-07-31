@@ -30,44 +30,44 @@ export const DataType = ({ active, setActive, data }) => {
 
   return (
     <div className="flex gap-4">
-      <div className="flex items-center gap-4 ">
+      <div className="flex items-center gap-4">
         <div
-          className={`p-1 px-2.5 cursor-pointer hover:bg-white hover:border flex items-center justify-center gap-2 border border-[#71737F] bg-white rounded-lg`}
+          className={`px-6 py-3 cursor-pointer bg-white flex items-center justify-center gap-2  rounded-full`}
         >
-          <Image src={`/icons/down-arrow.svg`} width={12} height={12} />
           <p className="font-medium">{"Last 7 days"}</p>
+          <Image src={`/icons/down-arrow.svg`} width={20} height={20} />
         </div>
       </div>
-      <div className="flex items-center bg-[#ECEFF3] rounded-lg cursor-pointer">
+      <div className="flex items-center  rounded-lg cursor-pointer">
         <div
-          className={`p-1 px-2.5 rounded-lg ${
+          className={`p-3 px-6  ${
             active === "all"
-              ? "bg-white border border-[#71737F] text-black"
+              ? "bg-white h-full flex items-center justify-center rounded-full text-black"
               : ""
           }`}
           onClick={() => setActive("all")}
         >
-          All {counts.all !== 0 && counts.all}
+          All
         </div>
         <div
-          className={`p-1 px-2.5 rounded-lg ${
+          className={`p-3 px-6  ${
             active === "received"
-              ? "bg-white border border-[#71737F] text-black"
+              ? "bg-white h-full flex items-center justify-center rounded-full text-black"
               : ""
           }`}
           onClick={() => setActive("received")}
         >
-          Received {counts.received !== 0 && counts.received}
+          Received
         </div>
         <div
-          className={`p-1 px-2.5 rounded-lg ${
+          className={`p-3 px-6  ${
             active === "sent"
-              ? "bg-white border border-[#71737F] text-black  "
+              ? "bg-white h-full flex items-center justify-center rounded-full text-black"
               : ""
           }`}
           onClick={() => setActive("sent")}
         >
-          Sent {counts.sent !== 0 && counts.sent}
+          Sent
         </div>
       </div>
     </div>

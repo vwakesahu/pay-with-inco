@@ -37,31 +37,9 @@ import { toast } from "sonner";
 import { truncateMessage } from "@/utils/truncateMessage";
 
 export const columns = [
-  //   {
-  //     id: "select",
-  //     header: ({ table }) => (
-  //       <Checkbox
-  //         checked={
-  //           table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() && "indeterminate")
-  //         }
-  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //         aria-label="Select all"
-  //       />
-  //     ),
-  //     cell: ({ row }) => (
-  //       <Checkbox
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //       />
-  //     ),
-  //     enableSorting: false,
-  //     enableHiding: false,
-  //   },
   {
     accessorKey: "type",
-    header: "Type",
+    header: "Activity",
     cell: ({ row }) => (
       <div className="capitalize flex gap-2 items-center">
         {row.getValue("type") === "sent" ? (
@@ -73,13 +51,6 @@ export const columns = [
       </div>
     ),
   },
-  // {
-  //   accessorKey: "value", //needs to be changed
-  //   header: () => "Value",
-  //   cell: ({ row }) => {
-  //     return <div className="font-medium">{row.getValue("value")}</div>;
-  //   },
-  // },
   {
     accessorKey: "status",
     header: "Status",
@@ -87,16 +58,10 @@ export const columns = [
       <div className="capitalize">
         <div className="flex items-center gap-4 ">
           <div
-            className={`p-1 px-2.5 cursor-pointer font-semibold flex items-center justify-center gap-2 border border-[#71737F] bg-white rounded-full ${
-              row.getValue("status") === "success"
-                ? "bg-[#DBF6CB] text-[#217D4C]"
-                : ""
+            className={`p-1.5 px-3 cursor-pointer flex items-center justify-center gap-2  bg-white rounded-full ${
+              row.getValue("status") === "success" ? "bg-[#9FFFA2]" : ""
             }
-            ${
-              row.getValue("status") === "failed"
-                ? "bg-red-200 text-red-700"
-                : ""
-            }
+            ${row.getValue("status") === "failed" ? "bg-[#FF9F9F]" : ""}
             `}
           >
             <p className={`w-[6rem] text-center }`}>{row.getValue("status")}</p>
@@ -105,17 +70,7 @@ export const columns = [
       </div>
     ),
   },
-  {
-    accessorKey: "activity", //needs to be changed
-    header: () => "Activity",
-    cell: ({ row }) => {
-      return (
-        <div className="font-medium capitalize text-[#71737F]">
-          {truncateMessage(row.getValue("activity"))}
-        </div>
-      );
-    },
-  },
+
   {
     accessorKey: "receiverAddress",
     header: () => "Addresses",
@@ -142,7 +97,7 @@ export const columns = [
             </div>
           </div>
         ) : (
-          "null"
+          "--"
         )}
       </>
     ),
@@ -257,14 +212,14 @@ export function DataTable({ data }) {
   return (
     <div className="w-full">
       <div className="py-4"></div>
-      <div className="rounded-md border">
+      <div className="rounded-2xl overflow-hidden">
         <Table>
-          <TableHeader className="bg-[#ECEFF3]">
+          <TableHeader className="bg-white hover:bg-white">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-white">
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="px-6 py-6">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -282,10 +237,11 @@ export function DataTable({ data }) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
+                  className="border-none"
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="px-6">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

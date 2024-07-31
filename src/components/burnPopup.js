@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input } from "./ui/input";
 import { burnToken } from "@/firebase/functions";
+import Image from "next/image";
+import { Label } from "./ui/label";
 
 const BurnToken = ({ w0, balanceOfEncryptedErc20, balance, setData }) => {
   const [open, setOpen] = useState(false);
@@ -74,41 +76,60 @@ const BurnToken = ({ w0, balanceOfEncryptedErc20, balance, setData }) => {
     <div>
       <AlertDialog open={open} onOpenChange={(e) => setOpen(e)}>
         <AlertDialogTrigger asChild>
-          <Button variant="outline" className="mt-2 py-8 px-16">
-            Burn
+          <Button variant="outline" className="bg-[#EEEEEE]">
+            Decrypt
           </Button>
         </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Burn Tokens</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action is irreversible. Proceeding will permanently burn your
-              ERC20 tokens from your account.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <div>
-            <Input
-              placeholder="Tokens to be burned"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-            />
-            <p className="text-sm text-muted-foreground mt-1 text-right">
-              Max: {balance}
-            </p>
-          </div>
-
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction disabled={loading} onClick={burn}>
-              {loading ? (
-                <div className="w-12 grid items-center justify-center">
-                  <Loader2 className="animate-spin" />
+        <AlertDialogContent className="p-0 min-w-fit">
+          <div className="flex">
+            <div className="p-8 h-full bg-[#BCD0FC] grid place-content-between">
+              <Image src={"/icons/decrypt.svg"} width={153} height={153} />
+            </div>
+            <div className="p-8 pb-6">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Decrypt</AlertDialogTitle>
+                <AlertDialogDescription className="w-80">
+                  Decrypted balance will be visible on-chain.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <div className="mt-6">
+                <div className="w-full flex items-center justify-between">
+                  <Label className="font-bold">Amount</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Available: {balance} USDC
+                  </p>
                 </div>
-              ) : (
-                "Burn"
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
+                <div className="relative w-full pb-8">
+                  <Input
+                    placeholder="Tokens to be burned"
+                    className="mt-3"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                  />
+                  <div
+                    className="absolute right-2 text-[#1958DF] cursor-pointer top-2"
+                    onClick={() => setValue(balance)}
+                  >
+                    Max
+                  </div>
+                </div>
+              </div>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="bg-[#EEEEEE]">
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction disabled={loading} onClick={burn}>
+                  {loading ? (
+                    <div className="w-12 grid items-center justify-center">
+                      <Loader2 className="animate-spin" />
+                    </div>
+                  ) : (
+                    "Confirm"
+                  )}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </div>
+          </div>
         </AlertDialogContent>
       </AlertDialog>
     </div>

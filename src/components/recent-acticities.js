@@ -71,15 +71,18 @@ export const RecentActivities = ({ w0, data, setData }) => {
 
   return (
     <div className="my-12 px-8">
-      <p className="text-4xl font-semibold mb-12">Recent Activities</p>
-      <div className="flex items-center justify-between w-full mb-4">
+      <p className="text-3xl font-semibold mb-6">Recent Activities</p>
+      <div className="flex items-center justify-between w-full">
         <DataType active={active} setActive={setActive} data={data} />
-        <Input
-          placeholder="Search..."
-          className="max-w-sm"
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
+        <div className="flex items-center gap-2 bg-white px-4 py-3 rounded-full overflow-hidden">
+          <Image src="/icons/search-icon.svg" width={20} height={20} />
+          <input
+            placeholder="Search transactions"
+            className="max-w-sm focus:outline-none"
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+        </div>
       </div>
 
       {loading ? (

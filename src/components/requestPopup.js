@@ -20,6 +20,7 @@ import { Contract } from "ethers";
 import { ERC20ABI } from "@/contract";
 import { getInstance } from "@/utils/fhEVM";
 import { useSelector } from "react-redux";
+import { Label } from "./ui/label";
 
 export function RequestButton({ w0, balanceOfEncryptedErc20 }) {
   const {
@@ -27,7 +28,7 @@ export function RequestButton({ w0, balanceOfEncryptedErc20 }) {
   } = useSelector((state) => state);
   const [open, setOpen] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState("");
-  const [value, setValue] = useState();
+  const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(false);
   const mint = async (e) => {
     e.preventDefault();
@@ -65,38 +66,35 @@ export function RequestButton({ w0, balanceOfEncryptedErc20 }) {
   return (
     <AlertDialog open={open} onOpenChange={(e) => setOpen(e)}>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" className="mt-2 py-8 px-16">
-          Request
+        <Button variant="outline" className="rounded-full">
+          Get Test Token
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Send Tokens</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action is irreversible. Proceeding will permanently transfer
-            your ERC20 tokens from your account to the specified
-            recipient&apos;s account.
-          </AlertDialogDescription>
+          <AlertDialogTitle className="text-2xl">
+            Get Test Tokens
+          </AlertDialogTitle>
         </AlertDialogHeader>
-        <Input
-          placeholder="Recipient's Address. eg.: 0x4557..65"
-          value={w0.address}
-          disabled
-        />
-        <Input
-          placeholder="Tokens to be sent"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
+        <Label className="font-bold">Amount</Label>
+        <div className="relative">
+          <Input
+            placeholder="Tokens to be sent"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
+          <p className="absolute right-2 top-2 text-[#808080]">USDC</p>
+        </div>
+
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel className="bg-[#EEEEEE]">Cancel</AlertDialogCancel>
           <AlertDialogAction disabled={loading} onClick={(e) => mint(e)}>
             {loading ? (
               <div className="w-12 grid items-center justify-center">
                 <Loader2 className="animate-spin" />
               </div>
             ) : (
-              "Continue"
+              "Confirm"
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

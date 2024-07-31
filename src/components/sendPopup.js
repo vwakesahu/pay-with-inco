@@ -20,14 +20,16 @@ import { Contract } from "ethers";
 import { ERC20ABI } from "@/contract";
 import { getInstance } from "@/utils/fhEVM";
 import { useSelector } from "react-redux";
+import Image from "next/image";
+import { Label } from "./ui/label";
 
-export function SendButton({ w0, data, setData, balanceOfEncryptedErc20 }) {
+export function SendButton({ w0, setData, balanceOfEncryptedErc20, balance }) {
   const {
     erc20ContractAddress: { erc20ContractAddress },
   } = useSelector((state) => state);
   const [open, setOpen] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState("");
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState("0");
   const [loading, setLoading] = useState(false);
   const [encryptedValue, setEncryptedValue] = useState("");
   const [fhEVM, setFhEVM] = useState(null);
@@ -101,45 +103,88 @@ export function SendButton({ w0, data, setData, balanceOfEncryptedErc20 }) {
   return (
     <AlertDialog open={open} onOpenChange={(e) => setOpen(e)}>
       <AlertDialogTrigger asChild>
-        <Button className="w-full min-w-[17rem] max-w-[20rem] mt-2">
-          Send
-        </Button>
+        <Button className="w-full">Encrypted Send</Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Send Tokens</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action is irreversible. Proceeding will permanently transfer
-            your ERC20 tokens from your account to the specified
-            recipient&apos;s account.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <Input
-          placeholder="Recipient's Address. eg.: 0x4557..65"
-          value={receiverAddress}
-          onChange={(e) => setReceiverAddress(e.target.value)}
-        />
-        <Input
-          placeholder="Tokens to be sent"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
-        <p className="max-w-44">
-          {encryptedValue && encryptedValue.slice(0, 10) + "..."}
-        </p>
-
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction disabled={loading} onClick={(e) => mint(e)}>
-            {loading ? (
-              <div className="w-12 grid items-center justify-center">
-                <Loader2 className="animate-spin" />
+      <AlertDialogContent className="p-0 min-w-fit">
+        <div className="flex">
+          <div className="p-8 h-full bg-[#BCD0FC] grid place-content-between">
+            <Image src={"/icons/sendpo.svg"} width={153} height={153} />
+            <div className="w-full grid place-content-center">
+              <div className="w-24 text-sm text-center">
+                Encryption by <span className="font-bold">Inco FHE</span>
               </div>
-            ) : (
-              "Continue"
-            )}
-          </AlertDialogAction>
-        </AlertDialogFooter>
+            </div>
+          </div>
+          <div className="p-8 pb-6">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Encrypted Send</AlertDialogTitle>
+              <AlertDialogDescription className="w-80">
+                Your transaction will be visible but the amount will be
+                encrypted.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="grid gap-7 mt-7">
+              <div>
+                <Label className="font-bold">To</Label>
+                <Input
+                  placeholder="Recipient's Address"
+                  className="mt-3"
+                  value={receiverAddress}
+                  onChange={(e) => setReceiverAddress(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <div className="w-full flex items-center justify-between">
+                  <Label className="font-bold">Amount</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Available: {balance} USDC
+                  </p>
+                </div>
+
+                <div className="relative w-full pb-14">
+                  <Input
+                    placeholder="Tokens to be sent"
+                    className="mt-3"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                  />
+                  <div
+                    className="absolute right-2 text-[#1958DF] cursor-pointer top-2"
+                    onClick={() => setValue(balance)}
+                  >
+                    Max
+                  </div>
+                </div>
+
+                <div className="div">
+                  {" "}
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="bg-[#EEEEEE]">
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      disabled={loading}
+                      onClick={(e) => mint(e)}
+                    >
+                      {loading ? (
+                        <div className="w-12 grid items-center justify-center">
+                          <Loader2 className="animate-spin" />
+                        </div>
+                      ) : (
+                        "Confirm"
+                      )}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </div>
+              </div>
+            </div>
+
+            {/* <p className="max-w-44">
+              {encryptedValue && encryptedValue.slice(0, 10) + "..."}
+            </p> */}
+          </div>
+        </div>
       </AlertDialogContent>
     </AlertDialog>
   );
