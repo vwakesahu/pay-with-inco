@@ -80,7 +80,7 @@ const WrapToken = ({
               <AlertDialogHeader>
                 <AlertDialogTitle>Wrap</AlertDialogTitle>
                 <AlertDialogDescription className="w-80">
-                  Encrypted balance will be visible on-chain.
+                 Convert USDC to cUSDC
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="mt-6">
@@ -92,7 +92,7 @@ const WrapToken = ({
                 </div>
                 <div className="relative w-full pb-8">
                   <Input
-                    placeholder="Tokens to be burned"
+                    placeholder="Tokens to be wraped"
                     className="mt-3"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}

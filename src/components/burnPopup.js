@@ -56,7 +56,7 @@ const BurnToken = ({
         value: 0,
         status: "success",
         transactionHash: txn.hash,
-        activity: `Burned tokens`,
+        activity: `unwrap tokens`,
         addresses: w0.address,
         receiverAddress: "",
         date: new Date().toISOString(),
@@ -92,7 +92,7 @@ const BurnToken = ({
               <AlertDialogHeader>
                 <AlertDialogTitle>Unwrap</AlertDialogTitle>
                 <AlertDialogDescription className="w-80">
-                  Decrypted balance will be visible on-chain.
+                  Converted cUSDC.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="mt-6">
