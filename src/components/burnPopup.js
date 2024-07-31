@@ -30,9 +30,10 @@ const BurnToken = ({
   balanceOfDeafaultErc20,
 }) => {
   const [open, setOpen] = useState(false);
-  const { encrytedERC20ContractAddress, defaultTokenAddress } = useSelector(
-    (state) => state
-  );
+  const {
+    encrytedERC20ContractAddress: { encrytedERC20ContractAddress },
+    defaultTokenAddress: { defaultTokenAddress },
+  } = useSelector((state) => state);
   const [value, setValue] = useState();
   const [loading, setLoading] = useState(false);
   const burn = async (e) => {

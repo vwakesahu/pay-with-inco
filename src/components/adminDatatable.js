@@ -81,11 +81,14 @@ export function AdminDataTable({ data, decryptBalance }) {
       cell: ({ row }) => {
         return (
           <>
-          {console.log(row)}
+            {console.log(row)}
             {row.getValue("decryptedBalance") ? (
               <p>{row.getValue("decryptedBalance")}</p>
             ) : (
-              <div onClick={() => decryptBalance(row.original.address)}>
+              <div
+                className="cursor-pointer"
+                onClick={() => decryptBalance(row.original.address)}
+              >
                 <KeyIcon className="w-4 rotate-90" />
               </div>
             )}

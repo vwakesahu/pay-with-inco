@@ -10,14 +10,14 @@ import { useSelector } from "react-redux";
 import { ERC20ABI } from "@/contract";
 import { getInstance, getSignature } from "@/utils/fhEVM";
 import { deafaultERC20ABI } from "@/contract/deafultERC20";
-import { toast } from "sonner";
-import { fetchAdminTable } from "@/firebase/functions";
 
 const MainPage = () => {
   const { wallets } = useWallets();
-  const { encrytedERC20ContractAddress, defaultTokenAddress } = useSelector(
-    (state) => state
-  );
+  const {
+    encrytedERC20ContractAddress: { encrytedERC20ContractAddress },
+    defaultTokenAddress: { defaultTokenAddress },
+  } = useSelector((state) => state);
+  console.log(encrytedERC20ContractAddress);
   const [data, setData] = useState([]);
   const [balance, setBalance] = useState("0");
   const [normalTokenBalance, setNormalTokenBalance] = useState("0");

@@ -5,14 +5,16 @@ import { encryptedERC20IntialState } from "../intialStates/userInitialState";
 
 const encrytedERC20AddressSlice = createSlice({
   name: "encrytedERC20Address",
-  initialState: encryptedERC20IntialState,
+  initialState: { encrytedERC20ContractAddress: encryptedERC20IntialState },
   reducers: {
     setEncryptedAddress: (state, action) => {
-      state.encrytedERC20Addres = action.payload;
-      console.log(state.encrytedERC20Address);
+      console.log(state);
+      console.log(action.payload);
+      state.encrytedERC20ContractAddress = action.payload;
+      console.log(state.encrytedERC20ContractAddress);
     },
     resetEncryptedAddress: (state) => {
-      state.encrytedERC20Address = userInitialState;
+      state.encrytedERC20ContractAddress = userInitialState;
     },
   },
 });

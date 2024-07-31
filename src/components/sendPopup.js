@@ -24,9 +24,10 @@ import Image from "next/image";
 import { Label } from "./ui/label";
 
 export function SendButton({ w0, setData, balanceOfEncryptedErc20, balance }) {
-  const { encrytedERC20ContractAddress, defaultTokenAddress } = useSelector(
-    (state) => state
-  );
+  const {
+    encrytedERC20ContractAddress: { encrytedERC20ContractAddress },
+    defaultTokenAddress: { defaultTokenAddress },
+  } = useSelector((state) => state);
   const [open, setOpen] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState("");
   const [value, setValue] = useState("0");

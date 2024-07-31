@@ -12,6 +12,8 @@ import { truncateAddress } from "@/utils/truncateAddress";
 import { RequestButton } from "./requestPopup";
 import { IncreaseAllowance } from "./increaseAllowance";
 import { useSelector } from "react-redux";
+import { InfoIcon } from "lucide-react";
+import { ChangeContractAddress } from "./changeContractAddressPopup";
 
 const Header = ({ w0, balanceOfEncryptedErc20, balanceOfDeafaultErc20 }) => {
   const { logout } = usePrivy();
@@ -22,7 +24,7 @@ const Header = ({ w0, balanceOfEncryptedErc20, balanceOfDeafaultErc20 }) => {
         <p className="font-bold text-4xl">Inco Pay</p>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex items-center gap-4">
         {/* <IncreaseAllowance w0={w0} /> */}
         <RequestButton
           balanceOfDeafaultErc20={balanceOfDeafaultErc20}
@@ -43,6 +45,10 @@ const Header = ({ w0, balanceOfEncryptedErc20, balanceOfDeafaultErc20 }) => {
             <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <div className="flex h-full items-center cursor-pointer">
+          <ChangeContractAddress />
+        </div>
       </div>
     </div>
   );

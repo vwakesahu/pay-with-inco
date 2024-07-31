@@ -5,7 +5,7 @@ import { defaultTokenIntialState } from "../intialStates/normalTokenAddress";
 
 const defaultTokenAddressSlice = createSlice({
   name: "defaultTokenAddress",
-  initialState: defaultTokenIntialState,
+  initialState: { defaultTokenAddress: defaultTokenIntialState },
   reducers: {
     setDefaultTokenAddress: (state, action) => {
       state.defaultTokenAddress = action.payload;

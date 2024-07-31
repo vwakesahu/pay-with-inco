@@ -33,6 +33,9 @@ export const RecentActivities = ({ w0, data, setData }) => {
         const filteredData = allTransactions.filter((tx) => {
           const matchesType = active === "all" || tx.type === active;
           const matchesSearchQuery =
+            tx.transactionHash
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
             tx.activity.toLowerCase().includes(searchQuery.toLowerCase()) ||
             tx.addresses.toLowerCase().includes(searchQuery.toLowerCase());
 

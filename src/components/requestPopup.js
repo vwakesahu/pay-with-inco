@@ -28,9 +28,10 @@ export function RequestButton({
   balanceOfEncryptedErc20,
   balanceOfDeafaultErc20,
 }) {
-  const { encrytedERC20ContractAddress, defaultTokenAddress } = useSelector(
-    (state) => state
-  );
+  const {
+    encrytedERC20ContractAddress: { encrytedERC20ContractAddress },
+    defaultTokenAddress: { defaultTokenAddress },
+  } = useSelector((state) => state);
   const [open, setOpen] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState("");
   const [value, setValue] = useState(0);
@@ -63,7 +64,10 @@ export function RequestButton({
     );
     toast.success("Initializing approval");
     try {
-      const txn = await contract_USDC.approve(encrytedERC20ContractAddress, value);
+      const txn = await contract_USDC.approve(
+        encrytedERC20ContractAddress,
+        value
+      );
       console.log("Transaction hash:", txn.hash);
 
       // Wait for 1 confirmation (adjust confirmations as needed)
