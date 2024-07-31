@@ -58,7 +58,7 @@ export const columns = [
       <div className="capitalize">
         <div className="flex items-center gap-4 ">
           <div
-            className={`p-1.5 px-3 cursor-pointer flex items-center justify-center gap-2  bg-white rounded-full ${
+            className={`p-1.5 px-3 cursor-pointer flex items-center justify-center gap-2   rounded-full ${
               row.getValue("status") === "success" ? "bg-[#9FFFA2]" : ""
             }
             ${row.getValue("status") === "failed" ? "bg-[#FF9F9F]" : ""}
@@ -251,7 +251,7 @@ export function DataTable({ data }) {
                 </TableRow>
               ))
             ) : (
-              <TableRow className='w-full bg-transparent'>
+              <TableRow className="w-full bg-transparent">
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center w-full"

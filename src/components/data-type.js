@@ -1,3 +1,4 @@
+import { fetchAdminTable } from "@/firebase/functions";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -30,7 +31,10 @@ export const DataType = ({ active, setActive, data }) => {
 
   return (
     <div className="flex gap-4">
-      <div className="flex items-center gap-4">
+      <div
+        className="flex items-center gap-4"
+        // onClick={() => fetchAdminTable("all", "")}
+      >
         <div
           className={`px-6 py-3 cursor-pointer bg-white flex items-center justify-center gap-2  rounded-full`}
         >

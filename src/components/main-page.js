@@ -11,6 +11,7 @@ import { ERC20ABI } from "@/contract";
 import { getInstance, getSignature } from "@/utils/fhEVM";
 import { deafaultERC20ABI } from "@/contract/deafultERC20";
 import { toast } from "sonner";
+import { fetchAdminTable } from "@/firebase/functions";
 
 const MainPage = () => {
   const { wallets } = useWallets();

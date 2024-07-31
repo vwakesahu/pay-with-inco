@@ -8,6 +8,8 @@ import {
   updateDoc,
   arrayUnion,
   addDoc,
+  getDocs,
+  query,
 } from "firebase/firestore";
 const addTransaction = async (transaction) => {
   const senderAddress = transaction.addresses; // Sender's address
@@ -92,5 +94,50 @@ export const uploadData = async (sampleData) => {
     console.log("Document successfully written!");
   } catch (e) {
     console.error("Error adding document: ", e);
+  }
+};
+
+export const fetchAdminTable = async (setLoading, setError) => {
+  try {
+    setLoading(true);
+    const q = query(collection(db, "transactions"));
+    const querySnapshot = await getDocs(q);
+    const fetchedData = querySnapshot.docs.map((doc) => doc.data());
+
+    // Flatten and sort data client-side
+    const allTransactions = fetchedData.flatMap((doc) => doc.address);
+    const transformedTransactions = allTransactions.map((address, index) => ({
+      index,
+      address,
+    }));
+    console.log(transformedTransactions);
+
+    // Filter transactions based on the type and search query
+    // const filteredData = allTransactions.filter((tx) => {
+    //   const matchesType = active === "all" || tx.type === active;
+    //   const matchesSearchQuery =
+    //     tx.activity.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    //     tx.addresses.toLowerCase().includes(searchQuery.toLowerCase());
+
+    //   return matchesType && matchesSearchQuery;
+    // });
+
+    // // Function to parse date strings into Date objects
+    // const parseDate = (dateString) => new Date(dateString);
+
+    // // Sort transactions by the `date` field in descending order
+    // const sortedData = filteredData.sort((a, b) => {
+    //   const aDate = parseDate(a.date);
+    //   const bDate = parseDate(b.date);
+    //   return bDate - aDate; // Descending order
+    // });
+    // console.log(sortedData)
+    //   return sortedData;
+    return transformedTransactions;
+  } catch (error) {
+    setError("Error fetching document: " + e.message);
+    console.error(error);
+  } finally {
+    setLoading(false);
   }
 };
