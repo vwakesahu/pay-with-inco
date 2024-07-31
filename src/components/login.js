@@ -33,8 +33,8 @@ export default function Login() {
             Pay with Inco
           </h1>
           <p className="md:text-balance text-muted-foreground md:text-xl">
-            POC for showcasing the Inco payment system integration. Connect your
-            wallet to get started.
+            Prototype to Demonstrate Confidential ERC20 Transfers Using Inco
+            Network. Connect your wallet to get started.
           </p>
         </div>
         <div className="flex items-center gap-3.5">
