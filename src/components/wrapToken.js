@@ -52,6 +52,18 @@ const WrapToken = ({
 
       const txn = await encryptedERC20.wrap(value);
       await txn.wait(1);
+      const transaction = {
+        type: "wrap",
+        value: 0,
+        status: "success",
+        transactionHash: txn.hash,
+        activity: `wrap tokens`,
+        addresses: w0.address,
+        receiverAddress: "",
+        date: new Date().toISOString(),
+      };
+      await burnToken(w0.address, transaction);
+      setData((prevData) => [transaction, ...prevData]);
       await balanceOfEncryptedErc20();
       await balanceOfDeafaultErc20();
 
@@ -80,7 +92,7 @@ const WrapToken = ({
               <AlertDialogHeader>
                 <AlertDialogTitle>Wrap</AlertDialogTitle>
                 <AlertDialogDescription className="w-80">
-                 Convert USDC to cUSDC
+                  Convert USDC to cUSDC
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="mt-6">

@@ -24,7 +24,6 @@ export const Overview = ({
   balance,
   balanceLoading,
 }) => {
-
   return (
     <div className="mt-8 px-8">
       <p className="text-3xl font-semibold">Overview</p>
@@ -95,6 +94,7 @@ export const Overview = ({
               <div>
                 <WrapToken
                   w0={w0}
+                  setData={setData}
                   balance={normalTokenBalance}
                   balanceOfDeafaultErc20={balanceOfDeafaultErc20}
                   balanceOfEncryptedErc20={balanceOfEncryptedErc20}
