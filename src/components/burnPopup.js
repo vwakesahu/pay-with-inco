@@ -104,7 +104,7 @@ const BurnToken = ({
                 </div>
                 <div className="relative w-full pb-8">
                   <Input
-                    placeholder="Tokens to be burned"
+                    placeholder="Tokens to be unwraped"
                     className="mt-3"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
