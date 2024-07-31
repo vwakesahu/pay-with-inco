@@ -6,14 +6,13 @@ import { ConfigureMint } from "./configureMint";
 
 const OwnerPage = () => {
   const { wallets } = useWallets();
-  const [data, setData] = useState([]);
   const w0 = wallets[0];
   return (
     <div>
       {w0 && (
         <>
           <Header w0={w0} />
-          <Navbar />
+          {/* <Navbar /> */}
           <ConfigureMint w0={w0} />
         </>
       )}

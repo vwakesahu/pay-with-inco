@@ -10,8 +10,10 @@ import {
 import { usePrivy } from "@privy-io/react-auth";
 import { truncateAddress } from "@/utils/truncateAddress";
 import { RequestButton } from "./requestPopup";
+import { IncreaseAllowance } from "./increaseAllowance";
+import { useSelector } from "react-redux";
 
-const Header = ({ w0, balanceOfEncryptedErc20 }) => {
+const Header = ({ w0, balanceOfEncryptedErc20, balanceOfDeafaultErc20 }) => {
   const { logout } = usePrivy();
   return (
     <div className="w-full flex items-center justify-between p-8 bg-white">
@@ -21,10 +23,13 @@ const Header = ({ w0, balanceOfEncryptedErc20 }) => {
       </div>
 
       <div className="flex gap-4">
+        {/* <IncreaseAllowance w0={w0} /> */}
         <RequestButton
+          balanceOfDeafaultErc20={balanceOfDeafaultErc20}
           w0={w0}
           balanceOfEncryptedErc20={balanceOfEncryptedErc20}
         />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             {w0.address && (

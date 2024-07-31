@@ -1,5 +1,16 @@
 export const erc20ABI = [
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_originalToken",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
     inputs: [],
     name: "InvalidShortString",
     type: "error",
@@ -152,31 +163,6 @@ export const erc20ABI = [
         type: "address",
       },
       {
-        indexed: true,
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "euint32",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "Mint",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "minter",
-        type: "address",
-      },
-      {
         indexed: false,
         internalType: "euint32",
         name: "minterAllowedAmount",
@@ -292,6 +278,31 @@ export const erc20ABI = [
     anonymous: false,
     inputs: [],
     name: "Unpause",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "minter",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "euint32",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "mint",
     type: "event",
   },
   {
@@ -513,19 +524,6 @@ export const erc20ABI = [
   {
     inputs: [
       {
-        internalType: "bytes",
-        name: "_amount",
-        type: "bytes",
-      },
-    ],
-    name: "burn",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "address",
         name: "authorizer",
         type: "address",
@@ -580,30 +578,6 @@ export const erc20ABI = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "minter",
-        type: "address",
-      },
-      {
-        internalType: "bytes",
-        name: "minterAllowedAmount",
-        type: "bytes",
-      },
-    ],
-    name: "configureMinter",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
     inputs: [],
     name: "currency",
     outputs: [
@@ -650,6 +624,43 @@ export const erc20ABI = [
         type: "bool",
       },
     ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "delegateViewer",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "bool",
+        name: "status",
+        type: "bool",
+      },
+    ],
+    name: "delegateViewerStatus",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -895,30 +906,6 @@ export const erc20ABI = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "_to",
-        type: "address",
-      },
-      {
-        internalType: "bytes",
-        name: "amount",
-        type: "bytes",
-      },
-    ],
-    name: "mint",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "bytes32",
         name: "publicKey",
         type: "bytes32",
@@ -972,6 +959,19 @@ export const erc20ABI = [
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "originalToken",
+    outputs: [
+      {
+        internalType: "contract OriginalToken",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -1192,25 +1192,6 @@ export const erc20ABI = [
     ],
     name: "receiveWithAuthorization",
     outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "minter",
-        type: "address",
-      },
-    ],
-    name: "removeMinter",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -1472,6 +1453,19 @@ export const erc20ABI = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
+    ],
+    name: "unwrap",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "_newBlacklister",
         type: "address",
@@ -1532,6 +1526,25 @@ export const erc20ABI = [
       },
     ],
     stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "wrap",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

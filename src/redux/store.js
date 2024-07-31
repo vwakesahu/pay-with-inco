@@ -13,10 +13,12 @@ import {
   persistReducer,
   persistStore,
 } from "redux-persist";
-import addressReducer from "./slices/userSlice";
+import encrytedERC20AddressReducer from "./slices/userSlice";
+import defaultTokenAddressReducer from "./slices/normalERCSlice";
 
 const combinedReducer = combineReducers({
-  erc20ContractAddress: addressReducer,
+  encrytedERC20ContractAddress: encrytedERC20AddressReducer,
+  defaultTokenAddress: defaultTokenAddressReducer,
 });
 
 const rootReducer = (state, action) => {

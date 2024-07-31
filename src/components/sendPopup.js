@@ -24,9 +24,9 @@ import Image from "next/image";
 import { Label } from "./ui/label";
 
 export function SendButton({ w0, setData, balanceOfEncryptedErc20, balance }) {
-  const {
-    erc20ContractAddress: { erc20ContractAddress },
-  } = useSelector((state) => state);
+  const { encrytedERC20ContractAddress, defaultTokenAddress } = useSelector(
+    (state) => state
+  );
   const [open, setOpen] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState("");
   const [value, setValue] = useState("0");
@@ -61,7 +61,7 @@ export function SendButton({ w0, setData, balanceOfEncryptedErc20, balance }) {
       const provider = await w0?.getEthersProvider();
       const signer = await provider?.getSigner();
       const encryptedERC20 = new Contract(
-        erc20ContractAddress,
+        encrytedERC20ContractAddress,
         ERC20ABI,
         signer
       );
@@ -75,8 +75,8 @@ export function SendButton({ w0, setData, balanceOfEncryptedErc20, balance }) {
       console.log(txn);
       console.log(txn.value.toString());
 
-      console.log("Minting 1e5 usdc to bob successful!");
-      toast.success("Minting successful");
+      console.log("Tokens sent successfully");
+      toast.success("Tokens sent successfully");
       await balanceOfEncryptedErc20();
       const transaction = {
         type: "sent",
@@ -92,7 +92,7 @@ export function SendButton({ w0, setData, balanceOfEncryptedErc20, balance }) {
       setData((prevData) => [transaction, ...prevData]);
       setLoading(false);
       setOpen(false);
-      toast.success("Transaction added successfully");
+      toast.success("Balance Updated!");
     } catch (error) {
       console.error("Error adding transaction", error);
       setLoading(false);

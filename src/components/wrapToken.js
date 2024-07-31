@@ -22,7 +22,7 @@ import { burnToken } from "@/firebase/functions";
 import Image from "next/image";
 import { Label } from "./ui/label";
 
-const BurnToken = ({
+const WrapToken = ({
   w0,
   balanceOfEncryptedErc20,
   balance,
@@ -35,51 +35,39 @@ const BurnToken = ({
   );
   const [value, setValue] = useState();
   const [loading, setLoading] = useState(false);
-  const burn = async (e) => {
+  const wrap = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       const provider = await w0?.getEthersProvider();
       const signer = await provider?.getSigner();
+      console.log(encrytedERC20ContractAddress);
       const encryptedERC20 = new Contract(
         encrytedERC20ContractAddress,
         ERC20ABI,
         signer
       );
 
-      const txn = await encryptedERC20.unwrap(value);
+      const txn = await encryptedERC20.wrap(value);
       await txn.wait(1);
-      const transaction = {
-        type: "unwrap",
-        value: 0,
-        status: "success",
-        transactionHash: txn.hash,
-        activity: `Burned tokens`,
-        addresses: w0.address,
-        receiverAddress: "",
-        date: new Date().toISOString(),
-      };
-      await burnToken(w0.address, transaction);
-      setData((prevData) => [transaction, ...prevData]);
-      await balanceOfDeafaultErc20();
-      console.log("Burned");
-      toast.success("Tokens unwraped successfully");
       await balanceOfEncryptedErc20();
+      await balanceOfDeafaultErc20();
+
       setLoading(false);
       setOpen(false);
     } catch (error) {
-      console.error("Error performing burn", error);
+      console.error("Error performing wrap", error);
       setLoading(false);
-      toast.error("Error performing burn");
+      toast.error("Error performing wrap");
     }
   };
   return (
     <div>
       <AlertDialog open={open} onOpenChange={(e) => setOpen(e)}>
         <AlertDialogTrigger asChild>
-          <Button variant="outline" className="bg-[#EEEEEE]">
-            Unwrap
+          <Button variant="outline" className="bg-[#EEEEEE] mt-4">
+            Wrap
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent className="p-0 min-w-fit">
@@ -89,9 +77,9 @@ const BurnToken = ({
             </div>
             <div className="p-8 pb-6">
               <AlertDialogHeader>
-                <AlertDialogTitle>Unwrap</AlertDialogTitle>
+                <AlertDialogTitle>Wrap</AlertDialogTitle>
                 <AlertDialogDescription className="w-80">
-                  Decrypted balance will be visible on-chain.
+                  Encrypted balance will be visible on-chain.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="mt-6">
@@ -120,7 +108,7 @@ const BurnToken = ({
                 <AlertDialogCancel className="bg-[#EEEEEE]">
                   Cancel
                 </AlertDialogCancel>
-                <AlertDialogAction disabled={loading} onClick={burn}>
+                <AlertDialogAction disabled={loading} onClick={wrap}>
                   {loading ? (
                     <div className="w-12 grid items-center justify-center">
                       <Loader2 className="animate-spin" />
@@ -138,4 +126,4 @@ const BurnToken = ({
   );
 };
 
-export default BurnToken;
+export default WrapToken;

@@ -1,23 +1,23 @@
 // userSlice.js
 
 import { createSlice } from "@reduxjs/toolkit";
-import { erc20ContractAddressIntialstate } from "../intialStates/userInitialState";
+import { encryptedERC20IntialState } from "../intialStates/userInitialState";
 
-const addressSlice = createSlice({
-  name: "erc20ContractAddress",
-  initialState: erc20ContractAddressIntialstate,
+const encrytedERC20AddressSlice = createSlice({
+  name: "encrytedERC20Address",
+  initialState: encryptedERC20IntialState,
   reducers: {
     setEncryptedAddress: (state, action) => {
-      state.erc20ContractAddress = action.payload;
-      console.log(state.erc20ContractAddress);
+      state.encrytedERC20Addres = action.payload;
+      console.log(state.encrytedERC20Address);
     },
     resetEncryptedAddress: (state) => {
-      state.erc20ContractAddress = userInitialState;
+      state.encrytedERC20Address = userInitialState;
     },
   },
 });
 
 export const { setEncryptedAddress, resresetEncryptedAddressetUser } =
-  addressSlice.actions;
+  encrytedERC20AddressSlice.actions;
 
-export default addressSlice.reducer;
+export default encrytedERC20AddressSlice.reducer;

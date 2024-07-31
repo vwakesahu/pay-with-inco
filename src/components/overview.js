@@ -8,11 +8,15 @@ import Loader from "./loader";
 import { RequestButton } from "./requestPopup";
 import BurnToken from "./burnPopup";
 import { useSelector } from "react-redux";
+import WrapToken from "./wrapToken";
 
 const { default: Image } = require("next/image");
 const { Button } = require("./ui/button");
 
 export const Overview = ({
+  balanceOfDeafaultErc20,
+  normalBalanceLoadin,
+  normalTokenBalance,
   w0,
   data,
   setData,
@@ -20,9 +24,6 @@ export const Overview = ({
   balance,
   balanceLoading,
 }) => {
-  const {
-    erc20ContractAddress: { erc20ContractAddress },
-  } = useSelector((state) => state);
 
   return (
     <div className="mt-8 px-8">
@@ -34,9 +35,7 @@ export const Overview = ({
             <div>
               <div className="flex items-center gap-3">
                 <Image src="/icons/lock.svg" width={16} height={16} />
-                <p className="font-medium text-[#71737F]">
-                  Encrypted USDC Balance
-                </p>
+                <p className="font-medium text-[#71737F]">cUSDC Balance</p>
               </div>
 
               <div>
@@ -67,6 +66,7 @@ export const Overview = ({
                     balance={balance}
                     w0={w0}
                     balanceOfEncryptedErc20={balanceOfEncryptedErc20}
+                    balanceOfDeafaultErc20={balanceOfDeafaultErc20}
                   />
                 </div>
               </div>
@@ -77,27 +77,28 @@ export const Overview = ({
             <div>
               <div className="flex items-center gap-3">
                 <Image src="/icons/unlock.svg" width={16} height={16} />
-                <p className="font-medium text-[#71737F]">
-                  Decrypted USDC Balance
-                </p>
+                <p className="font-medium text-[#71737F]">USDC Balance</p>
               </div>
 
-              {balanceLoading ? (
+              {normalBalanceLoadin ? (
                 <div className="h-28 grid place-items-center">
                   <Loader />
                 </div>
               ) : (
                 <div className="flex items-center mt-1">
                   <div className="text-7xl font-semibold text-primary">
-                    9.24
+                    {normalTokenBalance}
                   </div>
                   {/* <div className="text-8xl font-semibold text-primary">$</div> */}
                 </div>
               )}
               <div>
-                <Button variant="outline" className="bg-[#EEEEEE] mt-4">
-                  Encrypt
-                </Button>
+                <WrapToken
+                  w0={w0}
+                  balance={normalTokenBalance}
+                  balanceOfDeafaultErc20={balanceOfDeafaultErc20}
+                  balanceOfEncryptedErc20={balanceOfEncryptedErc20}
+                />
               </div>
             </div>
           </div>
