@@ -251,10 +251,10 @@ export function DataTable({ data }) {
                 </TableRow>
               ))
             ) : (
-              <TableRow>
+              <TableRow className='w-full bg-transparent'>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center w-full"
                 >
                   No results.
                 </TableCell>

@@ -95,9 +95,9 @@ export const RecentActivities = ({ w0, data, setData }) => {
         </p>
       ) : data.length === 0 ? (
         <div className="w-full flex flex-col gap-6 items-center justify-center min-h-[40vh] pb-40 pt-20">
-          <div className="flex flex-col items-center justify-center p-6 bg-white drop-shadow-sm rounded-lg">
+          <div className="flex flex-col items-center justify-center p-6">
             <Image src="/not-found.svg" width={200} height={200} />
-            <p className="text-xl font-semibold text-black max-w-sm text-center">
+            <p className="text-muted-foreground mt-6 text-sm text-black max-w-sm text-center">
               No data found! Try sending some tokens
             </p>
           </div>
