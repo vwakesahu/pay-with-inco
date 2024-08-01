@@ -67,12 +67,12 @@ export function ChangeContractAddress() {
               e.preventDefault();
               dispath(
                 setEncryptedAddress(
-                  "0xC6ce69ce63716e21fb007094baAD71602e916d67"
+                  "0x6C3C363c652a4f721A02cdb84F8d56a6f590b2db"
                 )
               );
               dispath(
                 setDefaultTokenAddress(
-                  "0x80B8De3aF0F6ee1f113D0Cfb732a4481358B870b"
+                  "0xf9e747b6182fd58d0D1be761E54298fA28B97428"
                 )
               );
             }}
