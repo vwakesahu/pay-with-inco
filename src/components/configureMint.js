@@ -153,11 +153,11 @@ export const ConfigureMint = ({ w0 }) => {
       if (type === "delegate") {
         await addDelegateViewer(add);
         console.log("delegating the viewing rights to dave successful!");
-        toast.success("Delegating the viewing rights successful!");
+        toast.success("Successfully delegated the viewing rights!");
       } else {
         await removeDelegateViewer(add);
         console.log("revoking the viewing rights to dave successful!");
-        toast.success("Revoking the viewing rights successful!");
+        toast.success("Successfully revoked the viewing rights!");
       }
       await getDelegateViewersData();
 
