@@ -36,11 +36,11 @@ import { CopyIcon, KeyIcon } from "lucide-react";
 import { toast } from "sonner";
 import { truncateMessage } from "@/utils/truncateMessage";
 
-export function AdminDataTable({ data, decryptBalance }) {
+export function DelegateAddressTable({ data, delegate }) {
   const columns = [
     {
       accessorKey: "address",
-      header: () => "Addresses",
+      header: () => "Delegated Addresses",
       cell: ({ row }) => (
         <>
           {row.getValue("address") ? (
@@ -68,34 +68,25 @@ export function AdminDataTable({ data, decryptBalance }) {
       ),
     },
     {
-      accessorKey: "decryptedBalance",
-      header: () => "Decrypt Balance",
+      accessorKey: "delegate",
+      header: () => "",
       cell: ({ row }) => {
         return (
           <>
-            {console.log(row)}
-            {row.getValue("decryptedBalance") ? (
-              <p>{row.getValue("decryptedBalance")}</p>
-            ) : (
-              <Image src={"/icons/lock.svg"} width={16} height={16} />
-            )}
-          </>
-        );
-      },
-    },
-    {
-      accessorKey: "index",
-      header: () => "Sr. No.",
-      cell: ({ row }) => {
-        return (
-          <>
-            {row.getValue("decryptedBalance") ? (
-              <></>
-            ) : (
-              <Button onClick={() => decryptBalance(row.original.address)}>
-                Decrypt
+            <div
+              className="cursor-pointer flex items-center justify-end"
+              onClick={() => console.log(row.original.address)}
+            >
+              {/* <KeyIcon className="w-4 rotate-90" /> */}
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-[#EEEEEE]"
+                onClick={() => delegate("revoke", row.original.address)}
+              >
+                Revoke
               </Button>
-            )}
+            </div>
           </>
         );
       },
@@ -128,7 +119,6 @@ export function AdminDataTable({ data, decryptBalance }) {
 
   return (
     <div className="w-full">
-      <div className="py-4"></div>
       <div className="rounded-2xl overflow-hidden">
         <Table>
           <TableHeader className="bg-white hover:bg-white">
@@ -180,7 +170,7 @@ export function AdminDataTable({ data, decryptBalance }) {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      {/* <div className="flex items-center justify-end space-x-2 py-4">
         <div className="space-x-2">
           <Button
             variant="outline"
@@ -199,7 +189,7 @@ export function AdminDataTable({ data, decryptBalance }) {
             Next
           </Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -8,13 +8,19 @@ import { toast } from "sonner";
 import { ERC20ABI } from "@/contract";
 import { useSelector } from "react-redux";
 import { AdminDataTable } from "./adminDatatable";
-import { fetchAdminTable } from "@/firebase/functions";
+import {
+  addDelegateViewer,
+  fetchAdminTable,
+  getDelegateViewers,
+  removeDelegateViewer,
+} from "@/firebase/functions";
 import Image from "next/image";
 import Loader from "./loader";
 import { Loader2 } from "lucide-react";
 import { debounce } from "@/utils/debounce";
 import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "@/firebase/config";
+import Tabs from "./tabs";
 
 export const ConfigureMint = ({ w0 }) => {
   const [data, setData] = useState([]);
@@ -28,6 +34,12 @@ export const ConfigureMint = ({ w0 }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [delegateViewerTabError, setDelegateViewerTabError] = useState(null);
+  const [delegateViewerTabLoading, setDelegateViewerTabLoading] =
+    useState(true);
+  const [delegateViewerTabData, setDelegateViewerTabData] = useState([]);
+
+  const [active, setActive] = useState("delegateViewer");
   const debouncedFetchData = useCallback(
     debounce(async () => {
       setLoading(true);
@@ -71,8 +83,12 @@ export const ConfigureMint = ({ w0 }) => {
     debouncedFetchData();
   }, [searchQuery, debouncedFetchData, w0]);
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+  const getDelegateViewersData = async () => {
+    const data = await getDelegateViewers(
+      setDelegateViewerTabLoading,
+      setDelegateViewerTabError
+    );
+    setDelegateViewerTabData(data);
   };
 
   const getAdminTableData = async () => {
@@ -81,6 +97,7 @@ export const ConfigureMint = ({ w0 }) => {
   };
   useEffect(() => {
     getAdminTableData();
+    getDelegateViewersData();
   }, []);
 
   const handleAddressChange = (e) => {
@@ -91,8 +108,10 @@ export const ConfigureMint = ({ w0 }) => {
     setMintingFee(e.target.value);
   };
 
-  const delegate = async () => {
-    setApproveLoading(true);
+  const delegate = async (type, add) => {
+    if (type === "delegate") {
+      setApproveLoading(true);
+    }
     try {
       const provider = await w0?.getEthersProvider();
       const signer = await provider?.getSigner();
@@ -123,12 +142,25 @@ export const ConfigureMint = ({ w0 }) => {
       // setApproveLoading(false);
       // return;
 
-      console.log(address);
-
-      const txn = await encryptedERC20.delegateViewerStatus(address, true);
+      console.log(add);
+      let txn;
+      if (type === "delegate") {
+        txn = await encryptedERC20.delegateViewerStatus(add, true);
+      } else {
+        txn = await encryptedERC20.delegateViewerStatus(add, false);
+      }
       await txn.wait(1);
-      console.log("delegating the viewing rights to dave successful!");
-      toast.success("Delegating the viewing rights successful!");
+      if (type === "delegate") {
+        await addDelegateViewer(add);
+        console.log("delegating the viewing rights to dave successful!");
+        toast.success("Delegating the viewing rights successful!");
+      } else {
+        await removeDelegateViewer(add);
+        console.log("revoking the viewing rights to dave successful!");
+        toast.success("Revoking the viewing rights successful!");
+      }
+      await getDelegateViewersData();
+
       setApproveLoading(false);
     } catch (error) {
       setApproveLoading(false);
@@ -137,7 +169,6 @@ export const ConfigureMint = ({ w0 }) => {
     }
   };
 
-  console.log(data);
   const decryptBalance = async (address) => {
     console.log(address);
     try {
@@ -172,11 +203,11 @@ export const ConfigureMint = ({ w0 }) => {
         .toString();
       console.log(decryptedBalance);
 
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.address === address ? { ...item, decryptedBalance } : item
-        )
-      );
+      // setData((prevData) =>
+      //   prevData.map((item) =>
+      //     item.address === address ? { ...item, decryptedBalance } : item
+      //   )
+      // );
       toast.success("Balance decrypted successfully!");
     } catch (error) {
       toast.error("Error decrypting the balance!");
@@ -184,9 +215,59 @@ export const ConfigureMint = ({ w0 }) => {
     }
   };
   return (
-    <div className="px-8 mt-12">
+    <div className="px-8 mt-12 grid place-items-center">
+      <div className="w-[31.5rem]">
+        <div className="w-full grid grid-cols-3 gap-3">
+          <Button
+            onClick={() => setActive("delegateViewer")}
+            className={`w-full border-none text-black rounded-full hover:bg-white ${
+              active === "delegateViewer"
+                ? "bg-white drop-shadow-sm"
+                : "bg-transparent"
+            }`}
+          >
+            Delegate Viewer
+          </Button>
+          <Button
+            onClick={() => setActive("decrypt")}
+            className={`w-full border-none text-black rounded-full hover:bg-white ${
+              active === "decrypt"
+                ? "bg-white drop-shadow-sm"
+                : "bg-transparent"
+            }`}
+          >
+            Decrypt
+          </Button>
+          <Button
+            onClick={() => setActive("configureMint")}
+            className={`w-full border-none text-black rounded-full hover:bg-white ${
+              active === "configureMint"
+                ? "bg-white drop-shadow-sm"
+                : "bg-transparent"
+            }`}
+          >
+            Configure Mint
+          </Button>
+        </div>
+        <Tabs
+          data={data}
+          loading={loading}
+          adminError={error}
+          error={delegateViewerTabError}
+          delegateLoading={delegateViewerTabLoading}
+          deligateData={delegateViewerTabData}
+          delegate={delegate}
+          active={active}
+          w0={w0}
+          decryptBalance={decryptBalance}
+          address={address}
+          handleAddressChange={handleAddressChange}
+          approveLoading={approveLoading}
+        />
+      </div>
+
       {/* <Button onClick={decryptBalance}>ajzhvc</Button> */}
-      <p className="text-2xl font-semibold">Add Delegate Viewer</p>
+      {/* <p className="text-2xl font-semibold">Add Delegate Viewer</p>
       <div className="grid grid-cols-6 mt-4 gap-4">
         <Input
           placeholder="Address"
@@ -242,7 +323,7 @@ export const ConfigureMint = ({ w0 }) => {
             </div>
           )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -10,6 +10,7 @@ import {
   addDoc,
   getDocs,
   query,
+  arrayRemove,
 } from "firebase/firestore";
 const addTransaction = async (transaction) => {
   const senderAddress = transaction.addresses; // Sender's address
@@ -141,3 +142,81 @@ export const fetchAdminTable = async (setLoading, setError) => {
     setLoading(false);
   }
 };
+
+export async function addDelegateViewer(newString) {
+  const userRef = doc(db, "delegateViewers", "addresses");
+
+  try {
+    const docSnap = await getDoc(userRef);
+
+    if (docSnap.exists()) {
+      const currentArray = docSnap.data().address || [];
+
+      if (!currentArray.includes(newString)) {
+        await updateDoc(userRef, {
+          address: arrayUnion(newString),
+        });
+        console.log("String added!");
+      } else {
+        console.log("String already exists in the array.");
+      }
+    } else {
+      console.log("No such document! Creating a new one.");
+      await setDoc(userRef, { address: [newString] });
+      console.log("Document created and string added!");
+    }
+  } catch (error) {
+    console.error("Error adding string: ", error);
+  }
+}
+export async function removeDelegateViewer(stringToRemove) {
+  const userRef = doc(db, "delegateViewers", "addresses");
+
+  try {
+    const docSnap = await getDoc(userRef);
+
+    if (docSnap.exists()) {
+      const currentArray = docSnap.data().address || [];
+
+      if (currentArray.includes(stringToRemove)) {
+        await updateDoc(userRef, {
+          address: arrayRemove(stringToRemove),
+        });
+        console.log("String removed!");
+      } else {
+        console.log("String does not exist in the array.");
+      }
+    } else {
+      console.log("No such document!");
+    }
+  } catch (error) {
+    console.error("Error removing string: ", error);
+  }
+}
+
+export async function getDelegateViewers(setLoading, setError) {
+  const userRef = doc(db, "delegateViewers", "addresses");
+  setLoading(true);
+  try {
+    const docSnap = await getDoc(userRef);
+
+    if (docSnap.exists()) {
+      const currentArray = docSnap.data().address || [];
+      console.log("Current Array:", currentArray);
+      const returnValue = currentArray.map((address) => ({
+        address,
+      }));
+      console.log(returnValue);
+      return returnValue;
+    } else {
+      console.log("No such document!");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error getting array: ", error);
+    setError("Error fetching document: " + e.message);
+    return [];
+  } finally {
+    setLoading(false);
+  }
+}
