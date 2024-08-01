@@ -54,7 +54,7 @@ export default function Login() {
             </div>
           </div>
           <p className="text-muted-foreground w-full flex items-center justify-start">
-            *This is a POC for showcasing the Inco payment system integration.
+            *This is a POC for showcasing confidential payments using Inco Network.
           </p>
         </div>
         {/* <div className="flex items-center gap-3.5">
