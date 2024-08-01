@@ -79,7 +79,7 @@ const burnToken = async (address, transaction) => {
       });
     }
   };
-  addTransactionToAddress(address, transaction, "burned");
+  addTransactionToAddress(address, transaction, "wrap");
 };
 export { addTransaction, burnToken };
 
