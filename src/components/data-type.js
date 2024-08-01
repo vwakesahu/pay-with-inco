@@ -31,7 +31,7 @@ export const DataType = ({ active, setActive, data }) => {
 
   return (
     <div className="flex gap-4">
-      <div
+      {/* <div
         className="flex items-center gap-4"
         // onClick={() => fetchAdminTable("all", "")}
       >
@@ -41,7 +41,7 @@ export const DataType = ({ active, setActive, data }) => {
           <p className="font-medium">{"Last 7 days"}</p>
           <Image src={`/icons/down-arrow.svg`} width={20} height={20} />
         </div>
-      </div>
+      </div> */}
       <div className="flex items-center  rounded-lg cursor-pointer">
         <div
           className={`p-3 px-6  ${
