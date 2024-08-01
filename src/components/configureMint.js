@@ -203,11 +203,11 @@ export const ConfigureMint = ({ w0 }) => {
         .toString();
       console.log(decryptedBalance);
 
-      // setData((prevData) =>
-      //   prevData.map((item) =>
-      //     item.address === address ? { ...item, decryptedBalance } : item
-      //   )
-      // );
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.address === address ? { ...item, decryptedBalance } : item
+        )
+      );
       toast.success("Balance decrypted successfully!");
     } catch (error) {
       toast.error("Error decrypting the balance!");
