@@ -45,7 +45,9 @@ export function DelegateAddressTable({ data, delegate }) {
         <>
           {row.getValue("address") ? (
             <div className="lowercase flex items-center gap-2">
-              <p className="text-primary">{truncateAddress(row.getValue("address"), 4, 4)}</p>
+              <p className="text-primary">
+                {truncateAddress(row.getValue("address"), 4, 4)}
+              </p>
               {/* <div
                 className="w-6"
                 onClick={() => {
