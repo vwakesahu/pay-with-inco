@@ -61,7 +61,7 @@ const BurnToken = ({
         receiverAddress: "",
         date: new Date().toISOString(),
       };
-      await burnToken(w0.address, transaction);
+      await burnToken(w0.address, transaction, "unwrap");
       setData((prevData) => [transaction, ...prevData]);
       await balanceOfDeafaultErc20();
       console.log("Burned");

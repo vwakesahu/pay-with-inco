@@ -61,7 +61,7 @@ const addTransaction = async (transaction) => {
   }
 };
 
-const burnToken = async (address, transaction) => {
+const burnToken = async (address, transaction, type) => {
   const addTransactionToAddress = async (address, transaction, type) => {
     const docRef = doc(db, "transactions", address);
     const docSnap = await getDoc(docRef);
@@ -79,7 +79,7 @@ const burnToken = async (address, transaction) => {
       });
     }
   };
-  addTransactionToAddress(address, transaction, "wrap");
+  addTransactionToAddress(address, transaction, type);
 };
 export { addTransaction, burnToken };
 

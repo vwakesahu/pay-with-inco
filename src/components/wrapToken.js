@@ -62,7 +62,7 @@ const WrapToken = ({
         receiverAddress: "",
         date: new Date().toISOString(),
       };
-      await burnToken(w0.address, transaction);
+      await burnToken(w0.address, transaction, "wrap");
       setData((prevData) => [transaction, ...prevData]);
       await balanceOfEncryptedErc20();
       await balanceOfDeafaultErc20();
