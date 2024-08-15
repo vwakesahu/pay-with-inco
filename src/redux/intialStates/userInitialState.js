@@ -1,2 +1,2 @@
 export const encryptedERC20IntialState =
-  "0x6C3C363c652a4f721A02cdb84F8d56a6f590b2db";
+  "0x5da406a818258cFA33A2E5FAcAa1dEE3CC2F401B";
