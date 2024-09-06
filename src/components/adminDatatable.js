@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import {
   flexRender,
   getCoreRowModel,
@@ -13,16 +12,6 @@ import {
 
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import {
   Table,
   TableBody,
   TableCell,
@@ -32,11 +21,14 @@ import {
 } from "@/components/ui/table";
 import Image from "next/image";
 import { truncateAddress } from "@/utils/truncateAddress";
-import { CopyIcon, KeyIcon } from "lucide-react";
-import { toast } from "sonner";
-import { truncateMessage } from "@/utils/truncateMessage";
 
 export function AdminDataTable({ data, decryptBalance }) {
+  const updateCountry = (address, countryCode) => {
+    // Update the country for the given address in your state or database
+    // This might involve an API call or updating local state
+    console.log(`Updating country for ${address} to ${countryCode}`);
+  };
+
   const columns = [
     {
       accessorKey: "address",
@@ -45,7 +37,9 @@ export function AdminDataTable({ data, decryptBalance }) {
         <>
           {row.getValue("address") ? (
             <div className="lowercase flex items-center gap-2">
-              <p className="text-primary">{truncateAddress(row.getValue("address"), 4, 4)}</p>
+              <p className="text-primary">
+                {truncateAddress(row.getValue("address"), 4, 4)}
+              </p>
               {/* <div
                 className="w-6"
                 onClick={() => {
@@ -65,6 +59,16 @@ export function AdminDataTable({ data, decryptBalance }) {
             "--"
           )}
         </>
+      ),
+    },
+    {
+      accessorKey: "country",
+      header: () => "Associated Country",
+      cell: ({ row }) => (
+        <CountrySelect
+          value={row.original.country}
+          onChange={(value) => updateCountry(row.original.address, value)}
+        />
       ),
     },
     {
@@ -203,3 +207,44 @@ export function AdminDataTable({ data, decryptBalance }) {
     </div>
   );
 }
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const countries = [
+  { code: "US", name: "United States" },
+  { code: "GB", name: "United Kingdom" },
+  { code: "FR", name: "France" },
+  { code: "DE", name: "Germany" },
+  { code: "IN", name: "India" },
+  // Add more countries as needed
+];
+
+const CountrySelect = ({ value, onChange }) => {
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Select a country" />
+      </SelectTrigger>
+      <SelectContent>
+        {countries.map((country) => (
+          <SelectItem key={country.code} value={country.code}>
+            <div className="flex items-center">
+              <img
+                src={`https://flagsapi.com/${country.code}/flat/24.png`}
+                alt={`${country.name} flag`}
+                className="mr-2 h-4 w-6 object-cover"
+              />
+              {country.name}
+            </div>
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+};

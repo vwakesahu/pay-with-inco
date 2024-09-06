@@ -216,7 +216,7 @@ export const ConfigureMint = ({ w0 }) => {
   };
   return (
     <div className="px-8 mt-12 grid place-items-center">
-      <div className="w-[31.5rem]">
+      <div className="w-[40rem]">
         <div className="w-full grid grid-cols-3 gap-3">
           <Button
             onClick={() => setActive("delegateViewer")}
