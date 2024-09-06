@@ -2,7 +2,7 @@ import { Contract } from "ethers";
 import { SendButton } from "./sendPopup";
 import { ERC20ABI } from "@/contract";
 import { getInstance, getSignature } from "@/utils/fhEVM";
-import { CoinsIcon, PiggyBankIcon } from "lucide-react";
+import { CoinsIcon, MapPinIcon, PiggyBankIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import Loader from "./loader";
 import { RequestButton } from "./requestPopup";
@@ -29,7 +29,7 @@ export const Overview = ({
       <p className="text-3xl font-semibold">Overview</p>
       <div className="mt-8 p-4 py-6 bg-white rounded-lg flex drop-shadow-sm">
         <Image src={"/icons/hero.svg"} width={305} height={247} />
-        <div className="w-full grid grid-cols-2">
+        <div className="w-full grid grid-cols-3">
           <div className="border-r w-full flex  items-center justify-center">
             <div>
               <div className="flex items-center gap-3">
@@ -72,7 +72,7 @@ export const Overview = ({
             </div>
           </div>
 
-          <div className="w-full flex  items-center px-14">
+          <div className="w-full flex border-r  items-center px-14">
             <div>
               <div className="flex items-center gap-3">
                 <Image src="/icons/unlock.svg" width={16} height={16} />
@@ -102,8 +102,38 @@ export const Overview = ({
               </div>
             </div>
           </div>
+
+          <div className="w-full flex  items-center px-14">
+            {/* Country Image */}
+            <UserCountryDisplay countryCode="IN" countryName="India" />
+          </div>
         </div>
       </div>
+    </div>
+  );
+};
+const UserCountryDisplay = ({ countryCode = "IN", countryName = "India" }) => {
+  const flagUrl = `https://flagsapi.com/${countryCode.toUpperCase()}/flat/64.png`;
+
+  return (
+    <div className="flex flex-col items-center justify-center h-full rounded-lg p-6 shadow-sm">
+      <div className="relative w-20 h-20 mb-4">
+        <img
+          src={flagUrl}
+          alt={`${countryName} flag`}
+          className="w-full h-full object-cover rounded-full border-4 border-white shadow-md"
+        />
+      </div>
+      <h3 className="text-2xl font-semibold text-primary mb-2">
+        {countryName}
+      </h3>
+      <div className="flex items-center text-sm text-gray-600">
+        <MapPinIcon className="w-4 h-4 mr-1" />
+        <p>Your Associated Country</p>
+      </div>
+      <p className="text-xs text-gray-500 mt-4 text-center">
+        Your transactions and activities are associated with this country.
+      </p>
     </div>
   );
 };
