@@ -5,7 +5,7 @@ import { getInstance, getSignature } from "@/utils/fhEVM";
 
 import { Contract } from "ethers";
 import { toast } from "sonner";
-import { ERC20ABI } from "@/contract";
+import { ERC20ABI, identityRegistryABI } from "@/contract";
 import { useSelector } from "react-redux";
 import { AdminDataTable } from "./adminDatatable";
 import {
@@ -27,6 +27,7 @@ export const ConfigureMint = ({ w0 }) => {
   const {
     encrytedERC20ContractAddress: { encrytedERC20ContractAddress },
     defaultTokenAddress: { defaultTokenAddress },
+    identityRegistryContractAddress: { identityRegistryContractAddress },
   } = useSelector((state) => state);
   const [address, setAddress] = useState("");
   const [mintingFee, setMintingFee] = useState("");
@@ -67,7 +68,9 @@ export const ConfigureMint = ({ w0 }) => {
           address,
         }));
         console.log(finalData);
-        setData(finalData);
+        const d = await fetchAssociatedCountries(finalData);
+        console.log(d);
+        setData(d);
       } catch (e) {
         console.error(e); // Log error for debugging
         setError("Error fetching document: " + e.message);
@@ -77,6 +80,39 @@ export const ConfigureMint = ({ w0 }) => {
     }, 300),
     [searchQuery, w0]
   );
+
+  async function fetchAssociatedCountries(tempdata) {
+    const provider = await w0?.getEthersProvider();
+    const signer = await provider?.getSigner();
+    const countryDetailContract = new Contract(
+      identityRegistryContractAddress,
+      identityRegistryABI,
+      signer
+    );
+
+    const data = await Promise.all(
+      tempdata.map(async (item) => {
+        try {
+          const country = await countryDetailContract.seeCountry(item.address);
+          return {
+            ...item,
+            associatedCountry: country,
+          };
+        } catch (error) {
+          console.error(
+            `Error fetching country for address ${item.address}:`,
+            error
+          );
+          return {
+            ...item,
+            associatedCountry: "Unknown",
+          };
+        }
+      })
+    );
+
+    return data;
+  }
 
   // Fetch data initially and on changes to  searchQuery, or w0
   useEffect(() => {
@@ -214,10 +250,37 @@ export const ConfigureMint = ({ w0 }) => {
       console.log(error);
     }
   };
+
+  const setCountry = async (address, count, forUpdating) => {
+    console.log(address, count);
+    const provider = await w0?.getEthersProvider();
+    const signer = await provider?.getSigner();
+
+    const countrySetContract = new Contract(
+      identityRegistryContractAddress,
+      identityRegistryABI,
+      signer
+    );
+
+    console.log(forUpdating);
+
+    if (!forUpdating) {
+      const txn = await countrySetContract.addDid(address);
+      await txn.wait(1);
+    }
+
+    const setCountryTxn = await countrySetContract.setIdentifier(
+      address,
+      "country",
+      count
+    );
+    await setCountryTxn.wait(1);
+  };
   return (
     <div className="px-8 mt-12 grid place-items-center">
+      {/* <button onClick={setCountry}>xvfd</button> */}
       <div className="w-[40rem]">
-        <div className="w-full grid grid-cols-3 gap-3">
+        <div className="w-full grid grid-cols-4 gap-3">
           <Button
             onClick={() => setActive("delegateViewer")}
             className={`w-full border-none text-black rounded-full hover:bg-white ${
@@ -229,7 +292,10 @@ export const ConfigureMint = ({ w0 }) => {
             Delegate Viewer
           </Button>
           <Button
-            onClick={() => setActive("decrypt")}
+            onClick={async () => {
+              await debouncedFetchData();
+              setActive("decrypt");
+            }}
             className={`w-full border-none text-black rounded-full hover:bg-white ${
               active === "decrypt"
                 ? "bg-white drop-shadow-sm"
@@ -248,7 +314,18 @@ export const ConfigureMint = ({ w0 }) => {
           >
             Configure Mint
           </Button>
+          <Button
+            onClick={() => setActive("addIdentity")}
+            className={`w-full border-none text-black rounded-full hover:bg-white ${
+              active === "addIdentity"
+                ? "bg-white drop-shadow-sm"
+                : "bg-transparent"
+            }`}
+          >
+            Add Identity
+          </Button>
         </div>
+        {/* {console.log(data)} */}
         <Tabs
           data={data}
           loading={loading}
@@ -263,6 +340,7 @@ export const ConfigureMint = ({ w0 }) => {
           address={address}
           handleAddressChange={handleAddressChange}
           approveLoading={approveLoading}
+          setCountry={setCountry}
         />
       </div>
 

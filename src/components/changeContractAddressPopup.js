@@ -3,26 +3,24 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { useState } from "react";
 import { Label } from "./ui/label";
 import { InfoIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  resresetEncryptedAddressetUser,
-  setEncryptedAddress,
-} from "@/redux/slices/userSlice";
-import {
-  resetSetDefaultAddress,
-  setDefaultTokenAddress,
-} from "@/redux/slices/normalERCSlice";
+import { setEncryptedAddress } from "@/redux/slices/userSlice";
+import { setDefaultTokenAddress } from "@/redux/slices/normalERCSlice";
+import { defaultTokenIntialState } from "@/redux/intialStates/normalTokenAddress";
+import { identityRegistryIntialState } from "@/redux/intialStates/identityRegistryIntialstate";
+import { encryptedERC20IntialState } from "@/redux/intialStates/userInitialState";
+import { erc20RulesContractAddressIntialState } from "@/redux/intialStates/erc20RulesContractAddressIntialState";
+import { setErc20RulesContractAddress } from "@/redux/slices/erc20RulesSlice";
+import { setIdentityRegistryContractAddress } from "@/redux/slices/identityRegistrySlice";
 
 export function ChangeContractAddress() {
   const dispath = useDispatch();
@@ -32,6 +30,12 @@ export function ChangeContractAddress() {
     defaultTokenAddress: { defaultTokenAddress },
   } = useSelector((state) => state);
   const [value, setValue] = useState(0);
+  const { identityRegistryContractAddress } = useSelector(
+    (st) => st.identityRegistryContractAddress
+  );
+  const { erc20RulesContractAddress } = useSelector(
+    (st) => st.erc20RulesContractAddress
+  );
 
   return (
     <AlertDialog open={open} onOpenChange={(e) => setOpen(e)}>
@@ -60,27 +64,47 @@ export function ChangeContractAddress() {
             onChange={(e) => dispath(setEncryptedAddress(e.target.value))}
           />
         </div>
+        <Label className="font-bold">Identity Registry Contract Address</Label>
+        <div className="relative">
+          <Input
+            placeholder="Tokens to be sent"
+            value={identityRegistryContractAddress}
+            onChange={(e) =>
+              dispath(setIdentityRegistryContractAddress(e.target.value))
+            }
+          />
+        </div>
+        <Label className="font-bold">ERC20 Rules Contract Address</Label>
+        <div className="relative">
+          <Input
+            placeholder="Tokens to be sent"
+            value={erc20RulesContractAddress}
+            onChange={(e) =>
+              dispath(setErc20RulesContractAddress(e.target.value))
+            }
+          />
+        </div>
 
         <AlertDialogFooter>
           <AlertDialogCancel
             onClick={(e) => {
               e.preventDefault();
+              dispath(setEncryptedAddress(encryptedERC20IntialState));
+              dispath(setDefaultTokenAddress(defaultTokenIntialState));
               dispath(
-                setEncryptedAddress(
-                  "0x6C3C363c652a4f721A02cdb84F8d56a6f590b2db"
+                setErc20RulesContractAddress(
+                  erc20RulesContractAddressIntialState
                 )
               );
               dispath(
-                setDefaultTokenAddress(
-                  "0xf9e747b6182fd58d0D1be761E54298fA28B97428"
-                )
+                setIdentityRegistryContractAddress(identityRegistryIntialState)
               );
             }}
             className="bg-[#EEEEEE]"
           >
             Reset
           </AlertDialogCancel>
-          <AlertDialogAction>Confirm</AlertDialogAction>
+          <AlertDialogAction>Close</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

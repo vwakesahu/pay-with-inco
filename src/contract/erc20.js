@@ -3,6 +3,16 @@ export const erc20ABI = [
     inputs: [
       {
         internalType: "address",
+        name: "_identityAddr",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_rulesAddr",
+        type: "address",
+      },
+      {
+        internalType: "address",
         name: "_originalToken",
         type: "address",
       },
@@ -702,6 +712,43 @@ export const erc20ABI = [
         internalType: "uint256[]",
         name: "extensions",
         type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "wallet",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "identifier",
+        type: "string",
+      },
+    ],
+    name: "getIdentifier",
+    outputs: [
+      {
+        internalType: "euint32",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "identifiers",
+    outputs: [
+      {
+        internalType: "string[]",
+        name: "",
+        type: "string[]",
       },
     ],
     stateMutability: "view",

@@ -22,11 +22,12 @@ import {
 import Image from "next/image";
 import { truncateAddress } from "@/utils/truncateAddress";
 
-export function AdminDataTable({ data, decryptBalance }) {
-  const updateCountry = (address, countryCode) => {
+export function AdminDataTable({ data, decryptBalance, w0, setCountry }) {
+  const updateCountry = async (address, countryCode, forUpdating) => {
     // Update the country for the given address in your state or database
     // This might involve an API call or updating local state
     console.log(`Updating country for ${address} to ${countryCode}`);
+    await setCountry(address, countryCode, forUpdating);
   };
 
   const columns = [
@@ -66,8 +67,13 @@ export function AdminDataTable({ data, decryptBalance }) {
       header: () => "Associated Country",
       cell: ({ row }) => (
         <CountrySelect
-          value={row.original.country}
-          onChange={(value) => updateCountry(row.original.address, value)}
+          w0={w0}
+          value={row.original.associatedCountry}
+          onChange={async (value, forUpdating) => {
+            console.log(value, forUpdating);
+            await updateCountry(row.original.address, value, forUpdating);
+          }}
+          // address={row.original.address}
         />
       ),
     },
@@ -215,36 +221,86 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Contract } from "ethers";
+import {
+  identityRegistryABI,
+  identityRegistryContractAddress,
+} from "@/contract";
 
-const countries = [
+export const countries = [
   { code: "US", name: "United States" },
   { code: "GB", name: "United Kingdom" },
   { code: "FR", name: "France" },
   { code: "DE", name: "Germany" },
   { code: "IN", name: "India" },
-  // Add more countries as needed
 ];
 
 const CountrySelect = ({ value, onChange }) => {
+  const [selectedValue, setSelectedValue] = React.useState(null);
+  const [debugInfo, setDebugInfo] = React.useState({});
+
+  React.useEffect(() => {
+    console.log("Value prop changed:", value);
+    setDebugInfo((prevInfo) => ({ ...prevInfo, valueProp: value }));
+
+    // Try to find the country by name or code
+    const country = countries.find((c) => c.name === value || c.code === value);
+    if (country) {
+      setSelectedValue(country.code);
+      setDebugInfo((prevInfo) => ({ ...prevInfo, matchedCountry: country }));
+    } else {
+      setSelectedValue(null);
+      setDebugInfo((prevInfo) => ({ ...prevInfo, matchedCountry: null }));
+    }
+  }, [value]);
+
+  const handleChange = async (code) => {
+    console.log(value);
+    console.log("Selection changed:", code);
+    setDebugInfo((prevInfo) => ({ ...prevInfo, selectedCode: code }));
+
+    const country = countries.find((c) => c.code === code);
+    if (value === "") {
+      await onChange(country.name, false);
+      setSelectedValue(code);
+      console.log("first");
+      setDebugInfo((prevInfo) => ({ ...prevInfo, selectedCountry: country }));
+    } else if (country) {
+      await onChange(country.name, true);
+      setSelectedValue(code);
+      console.log("first");
+      setDebugInfo((prevInfo) => ({ ...prevInfo, selectedCountry: country }));
+    } else {
+      setSelectedValue(null);
+      await onChange(null);
+      setDebugInfo((prevInfo) => ({ ...prevInfo, selectedCountry: null }));
+    }
+  };
+
   return (
-    <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a country" />
-      </SelectTrigger>
-      <SelectContent>
-        {countries.map((country) => (
-          <SelectItem key={country.code} value={country.code}>
-            <div className="flex items-center">
-              <img
-                src={`https://flagsapi.com/${country.code}/flat/24.png`}
-                alt={`${country.name} flag`}
-                className="mr-2 h-4 w-6 object-cover"
-              />
-              {country.name}
-            </div>
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div>
+      <Select value={selectedValue} onValueChange={handleChange}>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Select a country" />
+        </SelectTrigger>
+        <SelectContent>
+          {countries.map((country) => (
+            <SelectItem key={country.code} value={country.code}>
+              <div className="flex items-center">
+                <img
+                  src={`https://flagsapi.com/${country.code}/flat/24.png`}
+                  alt={`${country.name} flag`}
+                  className="mr-2 h-4 w-6 object-cover"
+                />
+                {country.name}
+              </div>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      {/* <pre className="mt-2 text-xs">
+        Debug: {JSON.stringify(debugInfo, null, 2)}
+      </pre> */}
+    </div>
   );
 };

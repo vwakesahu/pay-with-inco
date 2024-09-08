@@ -70,7 +70,8 @@ export function SendButton({ w0, setData, balanceOfEncryptedErc20, balance }) {
 
       const txn = await encryptedERC20.transfer(
         receiverAddress,
-        fhevmInstance.encrypt32(Number(value))
+        fhevmInstance.encrypt32(Number(value)),
+        { gasLimit: 7000000 }
       );
       await txn.wait(1);
       console.log(txn);

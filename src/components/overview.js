@@ -1,6 +1,6 @@
 import { Contract } from "ethers";
 import { SendButton } from "./sendPopup";
-import { ERC20ABI } from "@/contract";
+import { identityRegistryABI } from "@/contract";
 import { getInstance, getSignature } from "@/utils/fhEVM";
 import { CoinsIcon, MapPinIcon, PiggyBankIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -9,6 +9,8 @@ import { RequestButton } from "./requestPopup";
 import BurnToken from "./burnPopup";
 import { useSelector } from "react-redux";
 import WrapToken from "./wrapToken";
+import { usePrivy } from "@privy-io/react-auth";
+import { countries } from "./adminDatatable";
 
 const { default: Image } = require("next/image");
 const { Button } = require("./ui/button");
@@ -24,6 +26,18 @@ export const Overview = ({
   balance,
   balanceLoading,
 }) => {
+  const { ready, authenticated } = usePrivy();
+  const { identityRegistryContractAddress } = useSelector(
+    (st) => st.identityRegistryContractAddress
+  );
+  const { erc20RulesContractAddress } = useSelector(
+    (st) => st.erc20RulesContractAddress
+  );
+
+  // useEffect(() => {
+  //   if (ready && authenticated && w0.address) getCountryDetails();
+  // }, [w0, ready, authenticated]);
+
   return (
     <div className="mt-8 px-8">
       <p className="text-3xl font-semibold">Overview</p>
@@ -102,17 +116,77 @@ export const Overview = ({
               </div>
             </div>
           </div>
-
+          {/* <Button
+            variant="outline"
+            className="bg-[#EEEEEE]"
+            onClick={getcountrydetails}
+          >
+            call
+          </Button> */}
           <div className="w-full flex  items-center px-14">
             {/* Country Image */}
-            <UserCountryDisplay countryCode="IN" countryName="India" />
+            <UserCountryDisplay w0={w0} />
           </div>
         </div>
       </div>
     </div>
   );
 };
-const UserCountryDisplay = ({ countryCode = "IN", countryName = "India" }) => {
+const UserCountryDisplay = ({ w0 }) => {
+  const { identityRegistryContractAddress } = useSelector(
+    (st) => st.identityRegistryContractAddress
+  );
+  const [countryCode, setCountryCode] = useState("");
+  const [countryName, setCountryName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { ready, authenticated } = usePrivy();
+
+  useEffect(() => {
+    if (ready && authenticated && w0.address) {
+      const getCountryDetails = async () => {
+        try {
+          setLoading(true);
+          const provider = await w0?.getEthersProvider();
+          const signer = await provider?.getSigner();
+          const countryDetailContract = new Contract(
+            identityRegistryContractAddress,
+            identityRegistryABI,
+            signer
+          );
+
+          const country = await countryDetailContract.seeCountry(w0.address);
+          console.log("Country from blockchain:", country);
+
+          const foundCountry = countries.find(
+            (c) => c.code === country || c.name === country
+          );
+          if (foundCountry) {
+            setCountryCode(foundCountry.code);
+            setCountryName(foundCountry.name);
+          } else {
+            setError("Country not found in the list");
+          }
+        } catch (err) {
+          console.error("Error fetching country details:", err);
+          setError("Failed to fetch country details");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      getCountryDetails();
+    }
+  }, [w0, ready, authenticated]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   const flagUrl = `https://flagsapi.com/${countryCode.toUpperCase()}/flat/64.png`;
 
   return (
