@@ -22,6 +22,7 @@ import { getInstance } from "@/utils/fhEVM";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import { Label } from "./ui/label";
+import TokenTransferRulesAlert from "./sendAlert";
 
 export function SendButton({ w0, setData, balanceOfEncryptedErc20, balance }) {
   const {
@@ -156,6 +157,9 @@ export function SendButton({ w0, setData, balanceOfEncryptedErc20, balance }) {
                     onClick={() => setValue(balance)}
                   >
                     Max
+                  </div>
+                  <div className="max-w-sm">
+                    <TokenTransferRulesAlert />
                   </div>
                 </div>
 
