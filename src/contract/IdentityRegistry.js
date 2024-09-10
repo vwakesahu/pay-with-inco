@@ -214,6 +214,30 @@ export const IDENTITYREGISTRYABI = [
         name: "registrarId",
         type: "uint256",
       },
+      {
+        internalType: "bool",
+        name: "isBlacklisted",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "wallet",
+        type: "address",
+      },
+    ],
+    name: "isBlacklisted",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
     ],
     stateMutability: "view",
     type: "function",

@@ -1,2 +1,2 @@
 export const erc20RulesContractAddressIntialState =
-  "0x5c79728F2dD52b88a2b36C5D25B2E67D131b06f7";
+  "0xAA9577c9f5968084B4675630Bae412586c1D61F4";

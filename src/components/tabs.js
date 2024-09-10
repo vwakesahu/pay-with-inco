@@ -9,8 +9,9 @@ import { getDelegateViewers } from "@/firebase/functions";
 import Image from "next/image";
 import { ConfigureMintTable } from "./configureMintTable";
 import {
+  erc20ContractAddress,
+  erc20RulesABI,
   identityRegistryABI,
-  identityRegistryContractAddress,
 } from "@/contract";
 import {
   Select,
@@ -21,6 +22,8 @@ import {
 } from "./ui/select";
 import { Contract } from "ethers";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
+import CountrySelector from "./countrySelectorFromTo";
 
 const Tabs = ({
   setCountry,
@@ -202,9 +205,30 @@ const DecryptTab = ({
 };
 
 const AssociateCountryComponent = ({ w0, setCountry }) => {
+  const {
+    encrytedERC20ContractAddress: { encrytedERC20ContractAddress },
+    defaultTokenAddress: { defaultTokenAddress },
+    identityRegistryContractAddress: { identityRegistryContractAddress },
+    erc20RulesContractAddress: { erc20RulesContractAddress },
+  } = useSelector((state) => state);
+
   const [address, setAddress] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
   const [saveLoading, setSaveLoading] = useState(false);
+  const createPath = async () => {
+    const provider = await w0?.getEthersProvider();
+    const signer = await provider?.getSigner();
+    const contract = new Contract(
+      erc20RulesContractAddress,
+      erc20RulesABI,
+      signer
+    );
+
+    console.log(w0.address);
+
+    const txn = await contract.createPath("IN", "FR", true);
+    await txn.wait(1);
+  };
 
   const handleAddressChange = (e) => {
     setAddress(e.target.value);
@@ -254,50 +278,62 @@ const AssociateCountryComponent = ({ w0, setCountry }) => {
   };
 
   return (
-    <div className="w-full bg-white rounded-2xl text-xl">
-      <div className="p-6">
-        <div className="grid gap-2">
-          <p className="font-semibold">Associate Country with Address</p>
-          <p className="text-sm text-muted-foreground">
-            Enter an address and select its associated country.
-          </p>
-          <div className="flex items-center gap-6 mt-4">
-            <Input
-              placeholder="Address"
-              value={address}
-              onChange={handleAddressChange}
-            />
-            <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select country" />
-              </SelectTrigger>
-              <SelectContent>
-                {countries.map((country) => (
-                  <SelectItem key={country.code} value={country.code}>
-                    <div className="flex items-center">
-                      <img
-                        src={`https://flagsapi.com/${country.code}/flat/24.png`}
-                        alt={`${country.name} flag`}
-                        className="mr-2 h-4 w-6 object-cover"
-                      />
-                      {country.name}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button onClick={handleSave} disabled={saveLoading}>
-              {saveLoading ? (
-                <div className="w-12 grid items-center justify-center">
-                  <Loader2 className="animate-spin" />
-                </div>
-              ) : (
-                "Save"
-              )}
-            </Button>
+    <>
+      <div className="w-full bg-white rounded-2xl text-xl">
+        <div className="p-6">
+          <div className="grid gap-2">
+            <p className="font-semibold">Associate Country with Address</p>
+            <p className="text-sm text-muted-foreground">
+              Enter an address and select its associated country.
+            </p>
+            <div className="flex items-center gap-6 mt-4">
+              <Input
+                placeholder="Address"
+                value={address}
+                onChange={handleAddressChange}
+              />
+              <Select
+                value={selectedCountry}
+                onValueChange={setSelectedCountry}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select country" />
+                </SelectTrigger>
+                <SelectContent>
+                  {countries.map((country) => (
+                    <SelectItem key={country.code} value={country.code}>
+                      <div className="flex items-center">
+                        <img
+                          src={`https://flagsapi.com/${country.code}/flat/24.png`}
+                          alt={`${country.name} flag`}
+                          className="mr-2 h-4 w-6 object-cover"
+                        />
+                        {country.name}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Button onClick={handleSave} disabled={saveLoading}>
+                {saveLoading ? (
+                  <div className="w-12 grid items-center justify-center">
+                    <Loader2 className="animate-spin" />
+                  </div>
+                ) : (
+                  "Save"
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <CountrySelector
+        erc20RulesABI={erc20RulesABI}
+        erc20RulesContractAddress={erc20RulesContractAddress}
+        w0={w0}
+      />
+    </>
   );
 };

@@ -11,13 +11,18 @@ export const ERC20RULESABI = [
         name: "",
         type: "string",
       },
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
     ],
-    name: "countries",
+    name: "c2cRestrictions",
     outputs: [
       {
-        internalType: "uint8",
+        internalType: "bool",
         name: "",
-        type: "uint8",
+        type: "bool",
       },
     ],
     stateMutability: "view",
@@ -26,33 +31,24 @@ export const ERC20RULESABI = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
+        internalType: "string",
+        name: "from",
+        type: "string",
       },
-    ],
-    name: "country2CountryRestrictions",
-    outputs: [
       {
-        internalType: "uint16",
-        name: "",
-        type: "uint16",
+        internalType: "string",
+        name: "to",
+        type: "string",
       },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "getC2CRestrictions",
-    outputs: [
       {
-        internalType: "uint16[]",
-        name: "",
-        type: "uint16[]",
+        internalType: "bool",
+        name: "b",
+        type: "bool",
       },
     ],
-    stateMutability: "view",
+    name: "createPath",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -85,6 +81,25 @@ export const ERC20RULESABI = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "input",
+        type: "string",
+      },
+    ],
+    name: "stringLength",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "pure",
     type: "function",
   },
   {
