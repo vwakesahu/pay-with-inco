@@ -1,2 +1,2 @@
 export const defaultTokenIntialState =
-  "0x618fceF365aF804763A193BA4ddB92FeE18FE1E1";
+  "0xd09c6001267935c48A5F42ad8975B1Cb700c372D";

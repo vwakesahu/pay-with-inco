@@ -1,2 +1,2 @@
 export const identityRegistryIntialState =
-  "0xc8ccB96B94d3D4342E1FE910abEB70D38d1F5684";
+  "0xA4760c73B85787cd703BAFa70dE17FdF8d20D6a0";
