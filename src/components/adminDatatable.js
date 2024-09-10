@@ -228,11 +228,11 @@ import {
 } from "@/contract";
 
 export const countries = [
-  { code: "US", name: "United States" },
-  { code: "GB", name: "United Kingdom" },
-  { code: "FR", name: "France" },
-  { code: "DE", name: "Germany" },
-  { code: "IN", name: "India" },
+  { code: "USA", name: "United States" },
+  { code: "UKING", name: "United Kingdom" },
+  { code: "FRANCE", name: "France" },
+  { code: "GE", name: "Germany" },
+  { code: "INDI", name: "India" },
 ];
 
 const CountrySelect = ({ value, onChange }) => {
