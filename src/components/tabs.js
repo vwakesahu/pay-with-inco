@@ -226,7 +226,9 @@ const AssociateCountryComponent = ({ w0, setCountry }) => {
 
     console.log(w0.address);
 
-    const txn = await contract.createPath("IN", "FR", true);
+    const txn = await contract.createPath("IN", "FR", true, {
+      gasLimit: 700000,
+    });
     await txn.wait(1);
   };
 
@@ -301,7 +303,7 @@ const AssociateCountryComponent = ({ w0, setCountry }) => {
                 </SelectTrigger>
                 <SelectContent>
                   {countries.map((country) => (
-                    <SelectItem key={country.code} value={country.code}>
+                    <SelectItem key={country.code} value={country.sendValue}>
                       <div className="flex items-center">
                         <img
                           src={`https://flagsapi.com/${country.code}/flat/24.png`}

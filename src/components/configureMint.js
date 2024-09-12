@@ -262,20 +262,26 @@ export const ConfigureMint = ({ w0 }) => {
       signer
     );
 
-    console.log(forUpdating);
+    console.log(forUpdating, "heyu");
 
     if (!forUpdating) {
-      const txn = await countrySetContract.addDid(address);
+      const txn = await countrySetContract.addDid(address, {
+        gasLimit: 7000000,
+      });
       await txn.wait(1);
     }
+
+    const fhevmInstance = await getInstance();
+    const countty = fhevmInstance.encrypt32(count);
 
     const setCountryTxn = await countrySetContract.setIdentifier(
       address,
       "country",
-      count
+      countty
     );
     await setCountryTxn.wait(1);
   };
+
   return (
     <div className="px-8 mt-12 grid place-items-center">
       {/* <button onClick={setCountry}>xvfd</button> */}

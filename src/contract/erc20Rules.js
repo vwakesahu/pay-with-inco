@@ -8,21 +8,45 @@ export const ERC20RULESABI = [
     inputs: [
       {
         internalType: "string",
-        name: "",
+        name: "string1",
         type: "string",
       },
       {
         internalType: "string",
-        name: "",
+        name: "string2",
         type: "string",
       },
     ],
-    name: "c2cRestrictions",
+    name: "areStringsEqual",
     outputs: [
       {
         internalType: "bool",
         name: "",
         type: "bool",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "euint32",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "euint32",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "c2cRestrictions",
+    outputs: [
+      {
+        internalType: "ebool",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -31,22 +55,35 @@ export const ERC20RULESABI = [
   {
     inputs: [
       {
-        internalType: "string",
+        internalType: "bytes",
         name: "from",
-        type: "string",
+        type: "bytes",
       },
       {
-        internalType: "string",
+        internalType: "bytes",
         name: "to",
-        type: "string",
-      },
-      {
-        internalType: "bool",
-        name: "b",
-        type: "bool",
+        type: "bytes",
       },
     ],
     name: "createPath",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes",
+        name: "from",
+        type: "bytes",
+      },
+      {
+        internalType: "bytes",
+        name: "to",
+        type: "bytes",
+      },
+    ],
+    name: "deletePath",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

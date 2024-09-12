@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { countries } from "./adminDatatable";
+import { getInstance, getSignature } from "@/utils/fhEVM";
 import { toast } from "sonner";
 
 const CountrySelector = ({ w0, erc20RulesContractAddress, erc20RulesABI }) => {
@@ -35,9 +36,14 @@ const CountrySelector = ({ w0, erc20RulesContractAddress, erc20RulesABI }) => {
       );
 
       console.log(w0.address);
+      const fhevmInstance = await getInstance();
+      const encryptedFrom = fhevmInstance.encrypt32(fromCountry);
+      const encryptedTo = fhevmInstance.encrypt32(toCountry);
+      console.log(encryptedFrom, encryptedTo);
+      console.log(fhevmInstance);
       console.log("fromCountry", fromCountry, " toCountry", toCountry);
 
-      const txn = await contract.createPath(fromCountry, toCountry, true);
+      const txn = await contract.createPath(encryptedFrom, encryptedTo);
       await txn.wait(1);
       toast.success("Path created successfully!");
     } catch (error) {
@@ -64,7 +70,7 @@ const CountrySelector = ({ w0, erc20RulesContractAddress, erc20RulesABI }) => {
                 </SelectTrigger>
                 <SelectContent>
                   {countries.map((country) => (
-                    <SelectItem key={country.code} value={country.code}>
+                    <SelectItem key={country.code} value={country.sendValue}>
                       <div className="flex items-center">
                         <img
                           src={`https://flagsapi.com/${country.code}/flat/24.png`}
@@ -84,7 +90,7 @@ const CountrySelector = ({ w0, erc20RulesContractAddress, erc20RulesABI }) => {
                 </SelectTrigger>
                 <SelectContent>
                   {countries.map((country) => (
-                    <SelectItem key={country.code} value={country.code}>
+                    <SelectItem key={country.code} value={country.sendValue}>
                       <div className="flex items-center">
                         <img
                           src={`https://flagsapi.com/${country.code}/flat/24.png`}

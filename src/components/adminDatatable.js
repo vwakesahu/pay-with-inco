@@ -228,11 +228,11 @@ import {
 } from "@/contract";
 
 export const countries = [
-  { code: "US", name: "United States" },
-  { code: "GB", name: "United Kingdom" },
-  { code: "FR", name: "France" },
-  { code: "DE", name: "Germany" },
-  { code: "IN", name: "India" },
+  { code: "US", sendValue: 1, name: "United States" },
+  { code: "GB", sendValue: 2, name: "United Kingdom" },
+  { code: "FR", sendValue: 3, name: "France" },
+  { code: "DE", sendValue: 4, name: "Germany" },
+  { code: "IN", sendValue: 5, name: "India" },
 ];
 
 const CountrySelect = ({ value, onChange }) => {
@@ -244,7 +244,9 @@ const CountrySelect = ({ value, onChange }) => {
     setDebugInfo((prevInfo) => ({ ...prevInfo, valueProp: value }));
 
     // Try to find the country by name or code
-    const country = countries.find((c) => c.name === value || c.code === value);
+    const country = countries.find(
+      (c) => c.name === value || c.code === value || c.sendValue === value
+    );
     if (country) {
       setSelectedValue(country.code);
       setDebugInfo((prevInfo) => ({ ...prevInfo, matchedCountry: country }));
@@ -285,7 +287,7 @@ const CountrySelect = ({ value, onChange }) => {
         </SelectTrigger>
         <SelectContent>
           {countries.map((country) => (
-            <SelectItem key={country.code} value={country.code}>
+            <SelectItem key={country.code} value={country.sendValue}>
               <div className="flex items-center">
                 <img
                   src={`https://flagsapi.com/${country.code}/flat/24.png`}

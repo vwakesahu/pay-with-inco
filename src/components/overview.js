@@ -1,7 +1,12 @@
 import { Contract } from "ethers";
 import { SendButton } from "./sendPopup";
 import { identityRegistryABI } from "@/contract";
-import { getInstance, getSignature } from "@/utils/fhEVM";
+import {
+  getInstance,
+  getSignature,
+  getTokenSignature,
+  toHexString,
+} from "@/utils/fhEVM";
 import { CoinsIcon, MapPinIcon, PiggyBankIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import Loader from "./loader";
@@ -38,7 +43,56 @@ export const Overview = ({
   //   if (ready && authenticated && w0.address) getCountryDetails();
   // }, [w0, ready, authenticated]);
 
+  // const getCountryDetails = async () => {
+  //   try {
+  //     // setLoading(true);
+  //     const provider = await w0?.getEthersProvider();
+  //     const signer = await provider?.getSigner();
+  //     const countryDetailContract = new Contract(
+  //       identityRegistryContractAddress,
+  //       identityRegistryABI,
+  //       signer
+  //     );
+
+  //     const fhevmInstance = await getInstance();
+  //     const { signature, publicKey } = await getSignature(
+  //       identityRegistryContractAddress,
+  //       w0.address,
+  //       fhevmInstance
+  //     );
+
+  //     console.log(signature);
+  //     console.log(toHexString(publicKey));
+  //     const aj = await countryDetailContract.myCountry(publicKey, signature);
+  //     console.log(aj);
+  //     const decrptedCountry = await fhevmInstance
+  //       .decrypt(identityRegistryContractAddress, aj)
+  //       .toString();
+
+  //     console.log(decrptedCountry);
+
+  //     // const country = await countryDetailContract.seeCountry(w0.address);
+  //     // console.log("Country from blockchain:", country.toString());
+
+  //     // const foundCountry = countries.find(
+  //     //   (c) =>
+  //     //     c.code === country ||
+  //     //     c.name === country ||
+  //     //     c.sendValue.toString() === country.toString()
+  //     // );
+  //     // if (foundCountry) {
+  //     //   setCountryCode(foundCountry.code);
+  //     //   setCountryName(foundCountry.name);
+  //     // } else {
+  //     //   setError("Country not found in the list");
+  //     // }
+  //   } catch (err) {
+  //     console.error("Error fetching country details:", err);
+  //     // setError("Failed to fetch country details");
+  //   }
+  // };
   return (
+    // <button onClick={getCountryDetails}>jxdhbvjb dx</button>
     <div className="mt-8 px-8">
       <p className="text-3xl font-semibold">Overview</p>
       <div className="mt-8 p-4 py-6 bg-white rounded-lg flex drop-shadow-sm">
@@ -132,56 +186,72 @@ export const Overview = ({
     </div>
   );
 };
+
 const UserCountryDisplay = ({ w0 }) => {
   const { identityRegistryContractAddress } = useSelector(
     (st) => st.identityRegistryContractAddress
   );
   const [countryCode, setCountryCode] = useState("");
   const [countryName, setCountryName] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showFlag, setShowFlag] = useState(false); // State to show flag after button click
   const { ready, authenticated } = usePrivy();
 
   useEffect(() => {
-    if (ready && authenticated && w0.address) {
-      const getCountryDetails = async () => {
-        try {
-          setLoading(true);
-          const provider = await w0?.getEthersProvider();
-          const signer = await provider?.getSigner();
-          const countryDetailContract = new Contract(
-            identityRegistryContractAddress,
-            identityRegistryABI,
-            signer
-          );
+    setShowFlag(false);
+  }, [w0]);
 
-          const country = await countryDetailContract.seeCountry(w0.address);
-          console.log("Country from blockchain:", country);
+  const getCountryDetails = async () => {
+    try {
+      setLoading(true);
+      const provider = await w0?.getEthersProvider();
+      const signer = await provider?.getSigner();
+      const countryDetailContract = new Contract(
+        identityRegistryContractAddress,
+        identityRegistryABI,
+        signer
+      );
 
-          const foundCountry = countries.find(
-            (c) => c.code === country || c.name === country
-          );
-          if (foundCountry) {
-            setCountryCode(foundCountry.code);
-            setCountryName(foundCountry.name);
-          } else {
-            setError("Country not found in the list");
-          }
-        } catch (err) {
-          console.error("Error fetching country details:", err);
-          setError("Failed to fetch country details");
-        } finally {
-          setLoading(false);
-        }
-      };
+      const fhevmInstance = await getInstance();
+      const { signature, publicKey } = await getSignature(
+        identityRegistryContractAddress,
+        w0.address,
+        fhevmInstance
+      );
 
-      getCountryDetails();
+      const aj = await countryDetailContract.myCountry(publicKey, signature);
+      const decryptedCountry = fhevmInstance
+        .decrypt(identityRegistryContractAddress, aj)
+        .toString();
+
+      // Match the sendValue (decryptedCountry) to the country array
+      const foundCountry = countries.find(
+        (country) => country.sendValue === Number(decryptedCountry)
+      );
+
+      if (foundCountry) {
+        setCountryCode(foundCountry.code);
+        setCountryName(foundCountry.name);
+        setShowFlag(true); // Show flag once data is fetched
+      } else {
+        setError("Country not found in the list");
+      }
+    } catch (err) {
+      console.error("Error fetching country details:", err);
+      setError("Failed to fetch country details");
+    } finally {
+      setLoading(false);
     }
-  }, [w0, ready, authenticated]);
+  };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleClick = () => {
+    if (ready && authenticated && w0?.address) {
+      getCountryDetails();
+    } else {
+      setError("User not authenticated or provider unavailable");
+    }
+  };
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -190,24 +260,21 @@ const UserCountryDisplay = ({ w0 }) => {
   const flagUrl = `https://flagsapi.com/${countryCode.toUpperCase()}/flat/64.png`;
 
   return (
-    <div className="flex flex-col items-center justify-center h-full rounded-lg p-6 shadow-sm">
-      <div className="relative w-20 h-20 mb-4">
-        <img
-          src={flagUrl}
-          alt={`${countryName} flag`}
-          className="w-full h-full object-cover rounded-full border-4 border-white shadow-md"
-        />
-      </div>
-      <h3 className="text-2xl font-semibold text-primary mb-2">
-        {countryName}
-      </h3>
-      <div className="flex items-center text-sm text-gray-600">
-        <MapPinIcon className="w-4 h-4 mr-1" />
-        <p>Your Associated Country</p>
-      </div>
-      <p className="text-xs text-gray-500 mt-4 text-center">
-        Your transactions and activities are associated with this country.
-      </p>
+    <div>
+      <h3>Your Associated Country</h3>
+      <button onClick={handleClick}>
+        {loading ? "Loading..." : "Show Country Flag"}
+      </button>
+
+      {showFlag && (
+        <div>
+          <p>{countryName}</p>
+          <img src={flagUrl} alt={`${countryName} Flag`} />
+          <p>
+            Your transactions and activities are associated with this country.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
