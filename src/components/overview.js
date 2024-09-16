@@ -220,7 +220,12 @@ const UserCountryDisplay = ({ w0 }) => {
         fhevmInstance
       );
 
-      const aj = await countryDetailContract.myCountry(publicKey, signature);
+      const aj = await countryDetailContract.myCountry(
+        w0.address,
+        publicKey,
+        signature
+      );
+      console.log(aj);
       const decryptedCountry = fhevmInstance
         .decrypt(identityRegistryContractAddress, aj)
         .toString();
@@ -259,20 +264,44 @@ const UserCountryDisplay = ({ w0 }) => {
 
   const flagUrl = `https://flagsapi.com/${countryCode.toUpperCase()}/flat/64.png`;
 
-  return (
-    <div>
-      <h3>Your Associated Country</h3>
-      <button onClick={handleClick}>
-        {loading ? "Loading..." : "Show Country Flag"}
-      </button>
+  if (loading) {
+    return (
+      <div className="w-full h-full grid place-items-center">
+        <Loader />
+      </div>
+    );
+  }
 
-      {showFlag && (
-        <div>
-          <p>{countryName}</p>
-          <img src={flagUrl} alt={`${countryName} Flag`} />
-          <p>
+  return (
+    <div className="w-full">
+      {showFlag ? (
+        <div className="flex flex-col items-center justify-center h-full rounded-lg p-6 shadow-sm">
+          <div className="relative w-20 h-20 mb-4">
+            <img
+              src={flagUrl}
+              alt={`${countryName} flag`}
+              className="w-full h-full object-cover rounded-full border-4 border-white shadow-md"
+            />
+          </div>
+          <h3 className="text-2xl font-semibold text-primary mb-2">
+            {countryName}
+          </h3>
+          <div className="flex items-center text-sm text-gray-600">
+            <MapPinIcon className="w-4 h-4 mr-1" />
+            <p>Your Associated Country</p>
+          </div>
+          <p className="text-xs text-gray-500 mt-4 text-center">
             Your transactions and activities are associated with this country.
           </p>
+        </div>
+      ) : (
+        <div>
+          <Button
+            onClick={handleClick}
+            className="flex flex-col items-center justify-center h-full w-full"
+          >
+            Show Country Flag
+          </Button>
         </div>
       )}
     </div>

@@ -245,6 +245,11 @@ export const IDENTITYREGISTRYABI = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
         internalType: "bytes32",
         name: "publicKey",
         type: "bytes32",
