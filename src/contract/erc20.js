@@ -733,9 +733,9 @@ export const erc20ABI = [
     name: "getIdentifier",
     outputs: [
       {
-        internalType: "string",
+        internalType: "euint32",
         name: "",
-        type: "string",
+        type: "uint256",
       },
     ],
     stateMutability: "view",

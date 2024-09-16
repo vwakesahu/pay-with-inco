@@ -23,11 +23,11 @@ import Image from "next/image";
 import { truncateAddress } from "@/utils/truncateAddress";
 
 export function AdminDataTable({ data, decryptBalance, w0, setCountry }) {
-  const updateCountry = async (address, countryCode, forUpdating) => {
+  const updateCountry = async (address, countryCode, forUpdating, code) => {
     // Update the country for the given address in your state or database
     // This might involve an API call or updating local state
     console.log(`Updating country for ${address} to ${countryCode}`);
-    await setCountry(address, countryCode, forUpdating);
+    await setCountry(address, countryCode, forUpdating, code);
   };
 
   const columns = [
@@ -69,11 +69,11 @@ export function AdminDataTable({ data, decryptBalance, w0, setCountry }) {
         <CountrySelect
           w0={w0}
           value={row.original.associatedCountry}
-          onChange={async (value, forUpdating) => {
-            console.log(value, forUpdating);
-            await updateCountry(row.original.address, value, forUpdating);
+          onChange={async (value, forUpdating, code) => {
+            console.log(code);
+            await updateCountry(row.original.address, value, forUpdating, code);
           }}
-          // address={row.original.address}
+          address={row.original.address}
         />
       ),
     },
@@ -226,60 +226,144 @@ import {
   identityRegistryABI,
   identityRegistryContractAddress,
 } from "@/contract";
+import { getInstance, getSignature } from "@/utils/fhEVM";
+import { useSelector } from "react-redux";
+import { LockIcon } from "lucide-react";
 
 export const countries = [
-  { code: "US", name: "United States" },
-  { code: "GB", name: "United Kingdom" },
-  { code: "FR", name: "France" },
-  { code: "DE", name: "Germany" },
-  { code: "IN", name: "India" },
+  { code: "US", sendValue: 1, name: "United States" },
+  { code: "GB", sendValue: 2, name: "United Kingdom" },
+  { code: "FR", sendValue: 3, name: "France" },
+  { code: "DE", sendValue: 4, name: "Germany" },
+  { code: "IN", sendValue: 5, name: "India" },
 ];
 
-const CountrySelect = ({ value, onChange }) => {
+const CountrySelect = ({ value, onChange, w0, address }) => {
   const [selectedValue, setSelectedValue] = React.useState(null);
+  const [encryptedValue, setEncryptedValue] = React.useState(null);
+  const [isDecrypted, setIsDecrypted] = React.useState(false);
   const [debugInfo, setDebugInfo] = React.useState({});
+  const { identityRegistryContractAddress } = useSelector(
+    (st) => st.identityRegistryContractAddress
+  );
+
+  const [selectedCountry, setSelectedCountry] = React.useState({});
+
+  console.log(countries);
 
   React.useEffect(() => {
-    console.log("Value prop changed:", value);
+    console.log("Value prop changed:", value.toString());
     setDebugInfo((prevInfo) => ({ ...prevInfo, valueProp: value }));
 
-    // Try to find the country by name or code
-    const country = countries.find((c) => c.name === value || c.code === value);
-    if (country) {
-      setSelectedValue(country.code);
-      setDebugInfo((prevInfo) => ({ ...prevInfo, matchedCountry: country }));
-    } else {
+    if (typeof value === "object" && value !== null) {
+      // Assume it's an encrypted value
+      setEncryptedValue(value.toString());
+      setIsDecrypted(false);
       setSelectedValue(null);
-      setDebugInfo((prevInfo) => ({ ...prevInfo, matchedCountry: null }));
+    } else {
+      // Try to find the country by name, code, or sendValue
+      const country = countries.find(
+        (c) =>
+          c.name === value ||
+          c.code === value ||
+          c.sendValue === parseInt(value)
+      );
+      if (country) {
+        setSelectedValue(country.code);
+        setIsDecrypted(true);
+        setDebugInfo((prevInfo) => ({ ...prevInfo, matchedCountry: country }));
+      } else {
+        setSelectedValue(null);
+        setDebugInfo((prevInfo) => ({ ...prevInfo, matchedCountry: null }));
+      }
     }
   }, [value]);
 
   const handleChange = async (code) => {
-    console.log(value);
     console.log("Selection changed:", code);
-    setDebugInfo((prevInfo) => ({ ...prevInfo, selectedCode: code }));
+    // setDebugInfo((prevInfo) => ({ ...prevInfo, selectedCode: code }));
 
     const country = countries.find((c) => c.code === code);
-    if (value === "") {
-      await onChange(country.name, false);
+    if (selectedCountry?.code) {
+      // Encrypt the sendValue before passing it to onChange
+      const fhevmInstance = await getInstance();
+      const encryptedSendValue = fhevmInstance.encrypt32(country.sendValue);
+
+      await onChange(encryptedSendValue, true, code);
       setSelectedValue(code);
-      console.log("first");
-      setDebugInfo((prevInfo) => ({ ...prevInfo, selectedCountry: country }));
-    } else if (country) {
-      await onChange(country.name, true);
-      setSelectedValue(code);
-      console.log("first");
-      setDebugInfo((prevInfo) => ({ ...prevInfo, selectedCountry: country }));
+      setEncryptedValue(encryptedSendValue);
+      setIsDecrypted(false);
+      setSelectedCountry(country);
+      console.log("Country selected and encrypted");
     } else {
       setSelectedValue(null);
+      setEncryptedValue(null);
       await onChange(null);
-      setDebugInfo((prevInfo) => ({ ...prevInfo, selectedCountry: null }));
+      setSelectedCountry(country);
+      console.log("Country cleared");
+    }
+  };
+
+  const getCountryDetails = async () => {
+    try {
+      // setLoading(true);
+      const provider = await w0?.getEthersProvider();
+      const signer = await provider?.getSigner();
+      const countryDetailContract = new Contract(
+        identityRegistryContractAddress,
+        identityRegistryABI,
+        signer
+      );
+
+      const fhevmInstance = await getInstance();
+      const { signature, publicKey } = await getSignature(
+        identityRegistryContractAddress,
+        w0.address,
+        fhevmInstance
+      );
+
+      const aj = await countryDetailContract.myCountry(
+        address,
+        publicKey,
+        signature
+      );
+      console.log(aj);
+      const decryptedCountry = fhevmInstance
+        .decrypt(identityRegistryContractAddress, aj)
+        .toString();
+
+      console.log(decryptedCountry);
+
+      const foundCountry = countries.find(
+        (country) => country.sendValue === Number(decryptedCountry)
+      );
+
+      if (foundCountry) {
+        console.log(foundCountry);
+        setSelectedCountry(foundCountry);
+        // setCountryCode(foundCountry.code);
+        // setCountryName(foundCountry.name);
+      } else {
+        // setError("Country not found in the list");
+      }
+    } catch (err) {
+      console.error("Error fetching country details:", err);
+      // setError("Failed to fetch country details");
+    } finally {
+      // setLoading(false);
     }
   };
 
   return (
-    <div>
-      <Select value={selectedValue} onValueChange={handleChange}>
+    <div className="flex items-center gap-2">
+      <div onClick={getCountryDetails}>
+        <Image src={"/icons/lock.svg"} width={16} height={16} />
+      </div>
+      <Select
+        value={selectedCountry.code}
+        onValueChange={handleChange}
+        // disabled={!!encryptedValue && !isDecrypted}
+      >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Select a country" />
         </SelectTrigger>
@@ -298,9 +382,6 @@ const CountrySelect = ({ value, onChange }) => {
           ))}
         </SelectContent>
       </Select>
-      {/* <pre className="mt-2 text-xs">
-        Debug: {JSON.stringify(debugInfo, null, 2)}
-      </pre> */}
     </div>
   );
 };

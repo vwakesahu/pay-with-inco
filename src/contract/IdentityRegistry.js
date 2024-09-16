@@ -154,9 +154,9 @@ export const IDENTITYREGISTRYABI = [
     name: "getIdentifier",
     outputs: [
       {
-        internalType: "string",
+        internalType: "euint32",
         name: "",
-        type: "string",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -237,6 +237,35 @@ export const IDENTITYREGISTRYABI = [
         internalType: "bool",
         name: "",
         type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "bytes32",
+        name: "publicKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes",
+        name: "signature",
+        type: "bytes",
+      },
+    ],
+    name: "myCountry",
+    outputs: [
+      {
+        internalType: "bytes",
+        name: "",
+        type: "bytes",
       },
     ],
     stateMutability: "view",
@@ -349,9 +378,9 @@ export const IDENTITYREGISTRYABI = [
     name: "seeCountry",
     outputs: [
       {
-        internalType: "string",
+        internalType: "euint32",
         name: "",
-        type: "string",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -370,9 +399,9 @@ export const IDENTITYREGISTRYABI = [
         type: "string",
       },
       {
-        internalType: "string",
+        internalType: "bytes",
         name: "value",
-        type: "string",
+        type: "bytes",
       },
     ],
     name: "setIdentifier",

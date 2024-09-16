@@ -7,7 +7,7 @@ import { Contract } from "ethers";
 import { toast } from "sonner";
 import { ERC20ABI, identityRegistryABI } from "@/contract";
 import { useSelector } from "react-redux";
-import { AdminDataTable } from "./adminDatatable";
+import { AdminDataTable, countries } from "./adminDatatable";
 import {
   addDelegateViewer,
   fetchAdminTable,
@@ -82,6 +82,7 @@ export const ConfigureMint = ({ w0 }) => {
   );
 
   async function fetchAssociatedCountries(tempdata) {
+    console.log(tempdata);
     const provider = await w0?.getEthersProvider();
     const signer = await provider?.getSigner();
     const countryDetailContract = new Contract(
@@ -93,7 +94,7 @@ export const ConfigureMint = ({ w0 }) => {
     const data = await Promise.all(
       tempdata.map(async (item) => {
         try {
-          const country = await countryDetailContract.seeCountry(item.address);
+          const country = await countryDetailContract.myCountry(item.address);
           return {
             ...item,
             associatedCountry: country,
@@ -251,7 +252,7 @@ export const ConfigureMint = ({ w0 }) => {
     }
   };
 
-  const setCountry = async (address, count, forUpdating) => {
+  const setCountry = async (address, count, forUpdating, code) => {
     console.log(address, count);
     const provider = await w0?.getEthersProvider();
     const signer = await provider?.getSigner();
@@ -262,20 +263,37 @@ export const ConfigureMint = ({ w0 }) => {
       signer
     );
 
-    console.log(forUpdating);
+    console.log(forUpdating, "heyu");
+    let key;
+
+    console.log(forUpdating, code)
 
     if (!forUpdating) {
-      const txn = await countrySetContract.addDid(address);
+      const txn = await countrySetContract.addDid(address, {
+        gasLimit: 7000000,
+      });
       await txn.wait(1);
+    } else {
+      console.log(code);
+      key = countries.find((c) => c.code === code);
+      console.log(key);
     }
+
+    const fhevmInstance = await getInstance();
+    const countty = fhevmInstance.encrypt32(
+      !forUpdating ? count : key.sendValue
+    );
+
+    console.log(countty)
 
     const setCountryTxn = await countrySetContract.setIdentifier(
       address,
       "country",
-      count
+      countty
     );
     await setCountryTxn.wait(1);
   };
+
   return (
     <div className="px-8 mt-12 grid place-items-center">
       {/* <button onClick={setCountry}>xvfd</button> */}
